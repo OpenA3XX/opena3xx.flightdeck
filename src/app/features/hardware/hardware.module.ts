@@ -34,6 +34,7 @@ import { AddHardwareOutputTypeDialogComponent } from './components/hardware-outp
 import { RegisterHardwareBoardDialogComponent } from './components/hardware-boards/register-hardware-board-dialog/register-hardware-board-dialog.component';
 import { EditHardwareInputTypeDialogComponent } from './components/hardware-input-types/edit-hardware-input-type-dialog/edit-hardware-input-type-dialog.component';
 import { EditHardwareOutputTypeDialogComponent } from './components/hardware-output-types/edit-hardware-output-type-dialog/edit-hardware-output-type-dialog.component';
+import { AddHardwareInputDialogComponent } from './components/hardware-inputs/add-hardware-input-dialog/add-hardware-input-dialog.component';
 
 // Hardware Form Components
 import { LinkHardwareInputSelectorsFormComponent } from './components/hardware-input-selectors/link-hardware-input-selectors-form/link-hardware-input-selectors-form.component';
@@ -70,6 +71,7 @@ import { DataService } from 'src/app/core/services/data.service';
     LinkHardwareInputSelectorsFormComponent,
     MapHardwareInputSelectorsFormComponent,
     MapHardwareOutputSelectorsFormComponent,
+    AddHardwareInputDialogComponent,
 
   ],
   imports: [
@@ -107,6 +109,7 @@ import { DataService } from 'src/app/core/services/data.service';
     LinkHardwareInputSelectorsFormComponent,
     MapHardwareInputSelectorsFormComponent,
     MapHardwareOutputSelectorsFormComponent,
+    AddHardwareInputDialogComponent,
 
   ],
   providers: [

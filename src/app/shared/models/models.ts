@@ -71,11 +71,21 @@ export interface HardwareInputDto {
   id: number;
   name: string;
   hardwareInputType: string;
-  inputSelectors: HardwareInputSelectorDto[];
+  hardwarePanelId: number;
+  hardwareInputSelectors: HardwareInputSelectorDto[];
+}
+
+export interface AddHardwareInputDto {
+  name: string;
+  hardwareInputType: string;
+  hardwarePanelId: number;
+  hardwareInputSelectors?: HardwareInputSelectorDto[];
 }
 export interface HardwareInputSelectorDto {
   id: number;
   name: string;
+  hardwareInputType?: string;
+  isHardwareInputSelectorMappedWithHardware?: boolean;
 }
 
 export interface HardwareOutputDto {

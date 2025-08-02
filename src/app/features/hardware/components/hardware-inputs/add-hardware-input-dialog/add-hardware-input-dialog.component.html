@@ -1,0 +1,41 @@
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()" [showLoading]="loading">
+  <form [formGroup]="addHardwareInputForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Hardware Input Name</mat-label>
+      <input matInput
+             type="text"
+             formControlName="name"
+             placeholder="Enter Hardware Input Name">
+      <mat-icon matSuffix>text_format</mat-icon>
+      <mat-hint>Enter a descriptive name for this hardware input</mat-hint>
+      <mat-error *ngIf="addHardwareInputForm.get('name')?.hasError('required')">
+        Hardware Input Name is Required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Hardware Input Type</mat-label>
+      <mat-select formControlName="hardwareInputType" placeholder="Select Input Type">
+        <mat-option *ngFor="let type of hardwareInputTypes" [value]="type.name">
+          {{ type.name }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix>category</mat-icon>
+      <mat-hint>Select the type of hardware input</mat-hint>
+      <mat-error *ngIf="addHardwareInputForm.get('hardwareInputType')?.hasError('required')">
+        Hardware Input Type is Required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Hidden field for panel ID - not shown to user -->
+    <input type="hidden" [value]="panelId">
+  </form>
+
+  <div dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="addHardwareInputForm.invalid || loading" (click)="onSubmit()">
+      <mat-icon>check</mat-icon>
+      Add Hardware Input
+    </button>
+  </div>
+</opena3xx-dialog-wrapper>

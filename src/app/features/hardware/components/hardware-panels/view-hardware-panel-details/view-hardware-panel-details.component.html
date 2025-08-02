@@ -152,7 +152,7 @@
             </button>
             <button
               (click)="mapInputSelector(input)"
-              *ngIf="input.hardwareInputSelectors[0].isHardwareInputSelectorMappedWithHardware === false"
+              *ngIf="input.hardwareInputSelectors?.[0]?.isHardwareInputSelectorMappedWithHardware === false"
               mat-raised-button
               color="primary"
               class="action-button">
@@ -161,7 +161,7 @@
             </button>
             <button
               (click)="mapInputSelector(input)"
-              *ngIf="input.hardwareInputSelectors[0].isHardwareInputSelectorMappedWithHardware === true"
+              *ngIf="input.hardwareInputSelectors?.[0]?.isHardwareInputSelectorMappedWithHardware === true"
               mat-raised-button
               color="warn"
               class="action-button edit-button">
@@ -170,7 +170,7 @@
             </button>
             <button
               (click)="linkInputSelector(input)"
-              *ngIf="input.hardwareInputSelectors[0].simulatorEventDto !== null"
+              *ngIf="input.hardwareInputSelectors?.[0]?.simulatorEventDto !== null"
               mat-raised-button
               color="warn"
               class="action-button edit-button">
@@ -179,7 +179,7 @@
             </button>
             <button
               (click)="linkInputSelector(input)"
-              *ngIf="input.hardwareInputSelectors[0].simulatorEventDto === null"
+              *ngIf="input.hardwareInputSelectors?.[0]?.simulatorEventDto === null"
               mat-raised-button
               color="primary"
               class="action-button">

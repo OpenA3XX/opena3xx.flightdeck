@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 
 import {
   AddHardwarePanelDto,
+  AddHardwareInputDto,
   HardwareBoardDto,
+  HardwareInputDto,
   HardwareInputTypeDto,
   HardwareOutputTypeDto,
   HardwarePanelOverviewDto,
@@ -217,5 +219,29 @@ export class DataService {
       `${this.BASE_URL}/hardware-boards/link/hardware-output-selector`,
       linkExtenderBitToHardwareOutputSelectorDto
     );
+  }
+
+  // Hardware Input API Methods
+  getAllHardwareInputs(panelId?: number) {
+    const url = panelId
+      ? `${this.BASE_URL}/hardware-inputs/all?panelId=${panelId}`
+      : `${this.BASE_URL}/hardware-inputs/all`;
+    return this.http.get<HardwareInputDto[]>(url);
+  }
+
+  getHardwareInputById(id: number) {
+    return this.http.get<HardwareInputDto>(`${this.BASE_URL}/hardware-inputs/${id}`);
+  }
+
+  addHardwareInput(hardwareInputDto: AddHardwareInputDto) {
+    return this.http.post<HardwareInputDto>(`${this.BASE_URL}/hardware-inputs`, hardwareInputDto);
+  }
+
+  updateHardwareInput(hardwareInputDto: HardwareInputDto) {
+    return this.http.patch<HardwareInputDto>(`${this.BASE_URL}/hardware-inputs`, hardwareInputDto);
+  }
+
+  deleteHardwareInput(id: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-inputs/${id}`);
   }
 }

@@ -12,6 +12,7 @@ import { ViewHardwareOutputSelectorsDialogComponent } from '../../hardware-outpu
 import { HardwareInputDto, HardwareOutputDto, HardwarePanelDto } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { DeleteHardwareInputDialogComponent } from '../../hardware-input-selectors/delete-hardware-input-dialog/delete-hardware-input-dialog.component';
+import { AddHardwareInputDialogComponent } from '../../hardware-inputs/add-hardware-input-dialog/add-hardware-input-dialog.component';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { ThemeService } from 'src/app/core/services/theme.service';
 import { Subscription } from 'rxjs';
@@ -91,8 +92,19 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
         icon: 'add',
         color: 'primary',
         onClick: () => {
-          // TODO: Implement add hardware input functionality
-          console.log('Add Hardware Input clicked');
+          const dialogRef = this.dialog.open(AddHardwareInputDialogComponent, {
+            width: '500px',
+            disableClose: false,
+            data: {
+              panelId: this.hardwarePanelDto.id // Pass the current panel ID
+            }
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            if (result && result.action === 'added') {
+              this.fetchData(); // Refresh the data
+            }
+          });
         }
       },
       {
