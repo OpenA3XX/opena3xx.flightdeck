@@ -13,47 +13,43 @@ import { HardwareInputService } from './services/hardware-input.service';
 import { HardwareOutputService } from './services/hardware-output.service';
 
 // Hardware Components
-import { AddHardwareInputTypeComponent } from './components/add-hardware-input-type/add-hardware-input-type.component';
-import { AddHardwareOutputTypeComponent } from './components/add-hardware-output-type/add-hardware-output-type.component';
-import { EditHardwareInputTypeComponent } from './components/edit-hardware-input-type/edit-hardware-input-type.component';
-import { EditHardwareOutputTypeComponent } from './components/edit-hardware-output-type/edit-hardware-output-type.component';
-import { EditHardwarePanelComponent } from './components/edit-hardware-panel/edit-hardware-panel.component';
-import { ManageHardwareBoardsComponent } from './components/manage-hardware-boards/manage-hardware-board.component';
-import { ManageHardwareInputTypesComponent } from './components/manage-hardware-input-types/manage-hardware-input-types.component';
-import { ManageHardwareOutputTypesComponent } from './components/manage-hardware-output-types/manage-hardware-output-types.component';
-import { ManageHardwarePanelsComponent } from './components/manage-hardware-panels/manage-hardware-panels.component';
-import { RegisterHardwareBoardComponent } from './components/register-hardware-board/register-hardware-board.component';
-import { ViewHardwarePanelDetailsComponent } from './components/view-hardware-panel-details/view-hardware-panel-details.component';
+import { EditHardwarePanelComponent } from './components/hardware-panels/edit-hardware-panel/edit-hardware-panel.component';
+import { ManageHardwareBoardsComponent } from './components/hardware-boards/manage-hardware-boards/manage-hardware-board.component';
+import { ManageHardwareInputTypesComponent } from './components/hardware-input-types/manage-hardware-input-types/manage-hardware-input-types.component';
+import { ManageHardwareOutputTypesComponent } from './components/hardware-output-types/manage-hardware-output-types/manage-hardware-output-types.component';
+import { ManageHardwarePanelsComponent } from './components/hardware-panels/manage-hardware-panels/manage-hardware-panels.component';
+
+import { ViewHardwarePanelDetailsComponent } from './components/hardware-panels/view-hardware-panel-details/view-hardware-panel-details.component';
 
 // Hardware Dialog Components
-import { LinkHardwareInputSelectorsDialogComponent } from './components/link-hardware-input-selectors-dialog/link-hardware-input-selectors-dialog.component';
-import { MapHardwareInputSelectorsDialogComponent } from './components/map-hardware-input-selectors-dialog/map-hardware-input-selectors-dialog.component';
-import { MapHardwareOutputSelectorsDialogComponent } from './components/map-hardware-output-selectors-dialog/map-hardware-output-selectors-dialog.component';
-import { ViewHardwareInputSelectorsDialogComponent } from './components/view-hardware-input-selectors-dialog/view-hardware-input-selectors-dialog.component';
-import { ViewHardwareOutputSelectorsDialogComponent } from './components/view-hardware-output-selectors-dialog/view-hardware-output-selectors-dialog.component';
-import { DeleteHardwareInputDialogComponent } from './components/delete-hardware-input-dialog/delete-hardware-input-dialog.component';
-import { AddHardwarePanelDialogComponent } from './components/add-hardware-panel-dialog/add-hardware-panel-dialog.component';
+import { LinkHardwareInputSelectorsDialogComponent } from './components/hardware-input-selectors/link-hardware-input-selectors-dialog/link-hardware-input-selectors-dialog.component';
+import { MapHardwareInputSelectorsDialogComponent } from './components/hardware-input-selectors/map-hardware-input-selectors-dialog/map-hardware-input-selectors-dialog.component';
+import { MapHardwareOutputSelectorsDialogComponent } from './components/hardware-output-selectors/map-hardware-output-selectors-dialog/map-hardware-output-selectors-dialog.component';
+import { ViewHardwareInputSelectorsDialogComponent } from './components/hardware-input-selectors/view-hardware-input-selectors-dialog/view-hardware-input-selectors-dialog.component';
+import { ViewHardwareOutputSelectorsDialogComponent } from './components/hardware-output-selectors/view-hardware-output-selectors-dialog/view-hardware-output-selectors-dialog.component';
+import { DeleteHardwareInputDialogComponent } from './components/hardware-input-selectors/delete-hardware-input-dialog/delete-hardware-input-dialog.component';
+import { AddHardwarePanelDialogComponent } from './components/hardware-panels/add-hardware-panel-dialog/add-hardware-panel-dialog.component';
+import { AddHardwareInputTypeDialogComponent } from './components/hardware-input-types/add-hardware-input-type-dialog/add-hardware-input-type-dialog.component';
+import { AddHardwareOutputTypeDialogComponent } from './components/hardware-output-types/add-hardware-output-type-dialog/add-hardware-output-type-dialog.component';
+import { RegisterHardwareBoardDialogComponent } from './components/hardware-boards/register-hardware-board-dialog/register-hardware-board-dialog.component';
+import { EditHardwareInputTypeDialogComponent } from './components/hardware-input-types/edit-hardware-input-type-dialog/edit-hardware-input-type-dialog.component';
+import { EditHardwareOutputTypeDialogComponent } from './components/hardware-output-types/edit-hardware-output-type-dialog/edit-hardware-output-type-dialog.component';
 
 // Hardware Form Components
-import { LinkHardwareInputSelectorsFormComponent } from './components/link-hardware-input-selectors-form/link-hardware-input-selectors-form.component';
-import { MapHardwareInputSelectorsFormComponent } from './components/map-hardware-input-selectors-form/map-hardware-input-selectors-form.component';
-import { MapHardwareOutputSelectorsFormComponent } from './components/map-hardware-output-selectors-form/map-hardware-output-selectors-form.component';
+import { LinkHardwareInputSelectorsFormComponent } from './components/hardware-input-selectors/link-hardware-input-selectors-form/link-hardware-input-selectors-form.component';
+import { MapHardwareInputSelectorsFormComponent } from './components/hardware-input-selectors/map-hardware-input-selectors-form/map-hardware-input-selectors-form.component';
+import { MapHardwareOutputSelectorsFormComponent } from './components/hardware-output-selectors/map-hardware-output-selectors-form/map-hardware-output-selectors-form.component';
 
 // Core Services
 import { DataService } from 'src/app/core/services/data.service';
 
 @NgModule({
   declarations: [
-    AddHardwareInputTypeComponent,
-    AddHardwareOutputTypeComponent,
-    EditHardwareInputTypeComponent,
-    EditHardwareOutputTypeComponent,
     EditHardwarePanelComponent,
     ManageHardwareBoardsComponent,
     ManageHardwareInputTypesComponent,
     ManageHardwareOutputTypesComponent,
     ManageHardwarePanelsComponent,
-    RegisterHardwareBoardComponent,
     ViewHardwarePanelDetailsComponent,
 
     // Hardware Dialog Components
@@ -64,6 +60,11 @@ import { DataService } from 'src/app/core/services/data.service';
     ViewHardwareOutputSelectorsDialogComponent,
     DeleteHardwareInputDialogComponent,
     AddHardwarePanelDialogComponent,
+    AddHardwareInputTypeDialogComponent,
+    AddHardwareOutputTypeDialogComponent,
+    RegisterHardwareBoardDialogComponent,
+    EditHardwareInputTypeDialogComponent,
+    EditHardwareOutputTypeDialogComponent,
 
     // Hardware Form Components
     LinkHardwareInputSelectorsFormComponent,
@@ -81,16 +82,11 @@ import { DataService } from 'src/app/core/services/data.service';
     MatDialogModule
   ],
   exports: [
-    AddHardwareInputTypeComponent,
-    AddHardwareOutputTypeComponent,
-    EditHardwareInputTypeComponent,
-    EditHardwareOutputTypeComponent,
     EditHardwarePanelComponent,
     ManageHardwareBoardsComponent,
     ManageHardwareInputTypesComponent,
     ManageHardwareOutputTypesComponent,
     ManageHardwarePanelsComponent,
-    RegisterHardwareBoardComponent,
     ViewHardwarePanelDetailsComponent,
 
     // Hardware Dialog Components
@@ -101,6 +97,11 @@ import { DataService } from 'src/app/core/services/data.service';
     ViewHardwareOutputSelectorsDialogComponent,
     DeleteHardwareInputDialogComponent,
     AddHardwarePanelDialogComponent,
+    AddHardwareInputTypeDialogComponent,
+    AddHardwareOutputTypeDialogComponent,
+    RegisterHardwareBoardDialogComponent,
+    EditHardwareInputTypeDialogComponent,
+    EditHardwareOutputTypeDialogComponent,
 
     // Hardware Form Components
     LinkHardwareInputSelectorsFormComponent,

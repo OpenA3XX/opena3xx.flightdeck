@@ -2,18 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // Hardware Components
-import { AddHardwareInputTypeComponent } from './features/hardware/components/add-hardware-input-type/add-hardware-input-type.component';
-import { AddHardwareOutputTypeComponent } from './features/hardware/components/add-hardware-output-type/add-hardware-output-type.component';
 
-import { EditHardwareInputTypeComponent } from './features/hardware/components/edit-hardware-input-type/edit-hardware-input-type.component';
-import { EditHardwareOutputTypeComponent } from './features/hardware/components/edit-hardware-output-type/edit-hardware-output-type.component';
-import { EditHardwarePanelComponent } from './features/hardware/components/edit-hardware-panel/edit-hardware-panel.component';
-import { ManageHardwareBoardsComponent } from './features/hardware/components/manage-hardware-boards/manage-hardware-board.component';
-import { ManageHardwareInputTypesComponent } from './features/hardware/components/manage-hardware-input-types/manage-hardware-input-types.component';
-import { ManageHardwareOutputTypesComponent } from './features/hardware/components/manage-hardware-output-types/manage-hardware-output-types.component';
-import { ManageHardwarePanelsComponent } from './features/hardware/components/manage-hardware-panels/manage-hardware-panels.component';
-import { RegisterHardwareBoardComponent } from './features/hardware/components/register-hardware-board/register-hardware-board.component';
-import { ViewHardwarePanelDetailsComponent } from './features/hardware/components/view-hardware-panel-details/view-hardware-panel-details.component';
+
+import { EditHardwarePanelComponent } from './features/hardware/components/hardware-panels/edit-hardware-panel/edit-hardware-panel.component';
+import { ManageHardwareBoardsComponent } from './features/hardware/components/hardware-boards/manage-hardware-boards/manage-hardware-board.component';
+import { ManageHardwareInputTypesComponent } from './features/hardware/components/hardware-input-types/manage-hardware-input-types/manage-hardware-input-types.component';
+import { ManageHardwareOutputTypesComponent } from './features/hardware/components/hardware-output-types/manage-hardware-output-types/manage-hardware-output-types.component';
+import { ManageHardwarePanelsComponent } from './features/hardware/components/hardware-panels/manage-hardware-panels/manage-hardware-panels.component';
+
+import { ViewHardwarePanelDetailsComponent } from './features/hardware/components/hardware-panels/view-hardware-panel-details/view-hardware-panel-details.component';
 
 
 // Dashboard Components
@@ -61,26 +58,14 @@ const routes: Routes = [
     path: 'manage/hardware-input-types',
     component: ManageHardwareInputTypesComponent,
   },
-  {
-    path: 'edit/hardware-input-type',
-    component: EditHardwareInputTypeComponent,
-  },
-  {
-    path: 'add/hardware-input-type',
-    component: AddHardwareInputTypeComponent,
-  },
+
+
   {
     path: 'manage/hardware-output-types',
     component: ManageHardwareOutputTypesComponent,
   },
-  {
-    path: 'edit/hardware-output-type',
-    component: EditHardwareOutputTypeComponent,
-  },
-  {
-    path: 'add/hardware-output-type',
-    component: AddHardwareOutputTypeComponent,
-  },
+
+
   {
     path: 'settings',
     component: SettingsComponent,
@@ -93,10 +78,7 @@ const routes: Routes = [
     path: 'manage/hardware-boards',
     component: ManageHardwareBoardsComponent,
   },
-  {
-    path: 'register/hardware-board',
-    component: RegisterHardwareBoardComponent,
-  },
+
   {
     path: 'console',
     component: ConsoleComponent,

@@ -1,0 +1,24 @@
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
+  <form [formGroup]="addHardwareOutputTypeForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Hardware Output Type Name</mat-label>
+      <input matInput
+             type="text"
+             formControlName="name"
+             placeholder="Enter Hardware Output Type Name">
+      <mat-icon matSuffix>text_format</mat-icon>
+      <mat-hint>Enter the name of the hardware output type that describe the physical output type</mat-hint>
+      <mat-error *ngIf="addHardwareOutputTypeForm.get('name')?.hasError('required')">
+        Hardware Output Type Name is Required
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <div dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="addHardwareOutputTypeForm.invalid" (click)="onSubmit()">
+      <mat-icon>check</mat-icon>
+      Save
+    </button>
+  </div>
+</opena3xx-dialog-wrapper>

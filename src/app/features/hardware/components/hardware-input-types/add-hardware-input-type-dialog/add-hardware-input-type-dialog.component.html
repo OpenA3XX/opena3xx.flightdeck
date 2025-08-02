@@ -1,0 +1,24 @@
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
+  <form [formGroup]="addHardwareInputTypeForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Hardware Input Type Name</mat-label>
+      <input matInput
+             type="text"
+             formControlName="name"
+             placeholder="Enter Hardware Input Type Name">
+      <mat-icon matSuffix>text_format</mat-icon>
+      <mat-hint>Enter the name of the hardware input type that describe the physical input type</mat-hint>
+      <mat-error *ngIf="addHardwareInputTypeForm.get('name')?.hasError('required')">
+        Hardware Input Type Name is Required
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <div dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="addHardwareInputTypeForm.invalid" (click)="onSubmit()">
+      <mat-icon>check</mat-icon>
+      Save
+    </button>
+  </div>
+</opena3xx-dialog-wrapper>

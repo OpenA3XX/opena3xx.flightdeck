@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { HardwareBoardDto } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { DataTableConfig, TableColumnConfig, DataTableEvent } from 'src/app/shared/models/data-table.interface';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
+import { RegisterHardwareBoardDialogComponent } from '../register-hardware-board-dialog/register-hardware-board-dialog.component';
 
 @Component({
     templateUrl: './manage-hardware-board.component.html',
@@ -17,7 +19,11 @@ export class ManageHardwareBoardsComponent implements OnInit {
   data_loaded: boolean = false;
   headerActions: PageHeaderAction[] = [];
 
-  constructor(private router: Router, private dataService: DataService) {}
+  constructor(
+    private router: Router,
+    private dataService: DataService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.initializeTableConfig();
@@ -125,7 +131,18 @@ export class ManageHardwareBoardsComponent implements OnInit {
   }
 
   registerHardwareBoard() {
-    this.router.navigateByUrl('/register/hardware-board');
+    const dialogRef = this.dialog.open(RegisterHardwareBoardDialogComponent, {
+      width: '600px',
+      disableClose: false,
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'added') {
+        // Refresh the data after successful addition
+        this.loadData();
+      }
+    });
   }
 
   onTableEvent(event: DataTableEvent): void {

@@ -1,0 +1,51 @@
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
+  <form [formGroup]="registerHardwareBoardForm" (ngSubmit)="onSubmit()">
+    <mat-card class="example-card">
+      <mat-card-header>
+        <div mat-card-avatar class="dhcb"></div>
+        <mat-card-title>DHC Board</mat-card-title>
+        <mat-card-subtitle>OpenA3XX DHC Board - 8 IO Extender Buses</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image src="assets/opena3xx-hdc-board.png" alt="OpenA3XX DHC Board" class="image-dark-enhance" />
+      <mat-card-content>
+        <p>OpenA3XX Digital Hardware Controller Board</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button mat-flat-button color="primary">Select</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <opena3xx-input [field]="boardNameFieldConfig" [group]="registerHardwareBoardForm">
+    </opena3xx-input>
+
+    <opena3xx-slider
+      [field]="totalExtendersFieldConfig"
+      [group]="registerHardwareBoardForm"
+      (sliderValueChange)="onSliderValueChange($event)"
+    >
+    </opena3xx-slider>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Total I/O Count:</mat-label>
+      <input
+        autocomplete="off"
+        matInput
+        type="text"
+        disabled
+        value="{{ totalDiscreteInputOutput }}"
+      />
+      <mat-hint
+        >This is calculated based on how much IO Extender Buses are set on the board. (Total IOs =
+        Total Extenders x 16)</mat-hint
+      >
+    </mat-form-field>
+  </form>
+
+  <div dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="registerHardwareBoardForm.invalid" (click)="onSubmit()">
+      <mat-icon>check</mat-icon>
+      Save
+    </button>
+  </div>
+</opena3xx-dialog-wrapper>

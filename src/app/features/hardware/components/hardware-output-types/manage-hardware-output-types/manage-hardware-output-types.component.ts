@@ -1,23 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { filter, map, tap } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
-import { HardwareInputTypeDto } from 'src/app/shared/models/models';
+import { HardwareOutputTypeDto } from 'src/app/shared/models/models';
 import { DataTableConfig, TableColumnConfig, DataTableEvent } from 'src/app/shared/models/data-table.interface';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
+import { AddHardwareOutputTypeDialogComponent } from '../add-hardware-output-type-dialog/add-hardware-output-type-dialog.component';
+import { EditHardwareOutputTypeDialogComponent } from '../edit-hardware-output-type-dialog/edit-hardware-output-type-dialog.component';
 
 @Component({
-    selector: 'opena3xx-manage-hardware-input-types',
-    templateUrl: './manage-hardware-input-types.component.html',
-    styleUrls: ['./manage-hardware-input-types.component.scss'],
+    selector: 'opena3xx-manage-hardware-output-types',
+    templateUrl: './manage-hardware-output-types.component.html',
+    styleUrls: ['./manage-hardware-output-types.component.scss'],
     standalone: false
 })
-export class ManageHardwareInputTypesComponent implements OnInit {
+export class ManageHardwareOutputTypesComponent implements OnInit {
   tableConfig: DataTableConfig;
   dataLoaded = false;
   headerActions: PageHeaderAction[] = [];
 
-  constructor(private dataService: DataService, public router: Router) {}
+  constructor(
+    private dataService: DataService,
+    public router: Router,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.initializeTableConfig();
@@ -62,12 +69,12 @@ export class ManageHardwareInputTypesComponent implements OnInit {
       columns: columns,
       data: [],
       loading: !this.dataLoaded,
-      loadingMessage: 'Loading hardware input types...',
-      emptyMessage: 'No hardware input types found',
-      emptyIcon: 'login_off',
+      loadingMessage: 'Loading hardware output types...',
+      emptyMessage: 'No hardware output types found',
+      emptyIcon: 'logout_off',
       emptyAction: {
-        label: 'Add First Hardware Input Type',
-        action: () => this.addHardwareInputType()
+        label: 'Add First Hardware Output Type',
+        action: () => this.addHardwareOutputType()
       },
       searchPlaceholder: 'Search by name...',
       searchEnabled: true,
@@ -82,10 +89,10 @@ export class ManageHardwareInputTypesComponent implements OnInit {
   private initializeHeaderActions() {
     this.headerActions = [
       {
-        label: 'Add Hardware Input Type',
+        label: 'Add Hardware Output Type',
         icon: 'add',
         color: 'primary',
-        onClick: () => this.addHardwareInputType()
+        onClick: () => this.addHardwareOutputType()
       }
     ];
   }
@@ -95,14 +102,14 @@ export class ManageHardwareInputTypesComponent implements OnInit {
     this.tableConfig = { ...this.tableConfig, loading: true };
 
     this.dataService
-      .getAllHardwareInputTypes()
+      .getAllHardwareOutputTypes()
       .pipe(
         tap((data) => console.log('Data received', data)),
         filter((x) => !!x),
         map((data_received) => {
           this.tableConfig = {
             ...this.tableConfig,
-            data: data_received as unknown as HardwareInputTypeDto[],
+            data: data_received as HardwareOutputTypeDto[],
             loading: false
           };
           this.dataLoaded = true;
@@ -112,11 +119,33 @@ export class ManageHardwareInputTypesComponent implements OnInit {
   }
 
   onEditClick(id: number) {
-    this.router.navigateByUrl(`/edit/hardware-input-type?id=${id}`);
+    const dialogRef = this.dialog.open(EditHardwareOutputTypeDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { id: id }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'updated') {
+        // Refresh the data after successful update
+        this.loadData();
+      }
+    });
   }
 
-  addHardwareInputType() {
-    this.router.navigateByUrl(`/add/hardware-input-type`);
+  addHardwareOutputType() {
+    const dialogRef = this.dialog.open(AddHardwareOutputTypeDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'added') {
+        // Refresh the data after successful addition
+        this.loadData();
+      }
+    });
   }
 
   onTableEvent(event: DataTableEvent): void {
