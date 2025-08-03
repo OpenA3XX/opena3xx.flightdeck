@@ -11,8 +11,10 @@ import { ViewHardwareInputSelectorsDialogComponent } from '../../hardware-input-
 import { ViewHardwareOutputSelectorsDialogComponent } from '../../hardware-output-selectors/view-hardware-output-selectors-dialog/view-hardware-output-selectors-dialog.component';
 import { HardwareInputDto, HardwareOutputDto, HardwarePanelDto } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
-import { DeleteHardwareInputDialogComponent } from '../../hardware-input-selectors/delete-hardware-input-dialog/delete-hardware-input-dialog.component';
+import { DeleteHardwareInputDialogComponent } from '../../hardware-inputs/delete-hardware-input-dialog/delete-hardware-input-dialog.component';
 import { AddHardwareInputDialogComponent } from '../../hardware-inputs/add-hardware-input-dialog/add-hardware-input-dialog.component';
+import { AddHardwareOutputDialogComponent } from '../../hardware-outputs/add-hardware-output-dialog/add-hardware-output-dialog.component';
+import { EditHardwarePanelDialogComponent } from '../edit-hardware-panel-dialog/edit-hardware-panel-dialog.component';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { ThemeService } from 'src/app/core/services/theme.service';
 import { Subscription } from 'rxjs';
@@ -112,8 +114,19 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
         icon: 'add',
         color: 'primary',
         onClick: () => {
-          // TODO: Implement add hardware output functionality
-          console.log('Add Hardware Output clicked');
+          const dialogRef = this.dialog.open(AddHardwareOutputDialogComponent, {
+            width: '500px',
+            disableClose: false,
+            data: {
+              panelId: this.hardwarePanelDto.id // Pass the current panel ID
+            }
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            if (result && result.action === 'added') {
+              this.fetchData(); // Refresh the data
+            }
+          });
         }
       },
       {
@@ -168,7 +181,20 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
   }
 
   onEditHardwareDetails() {
-    this.router.navigateByUrl(`/edit/hardware-panel?id=${this.hardwarePanelDto.id}`);
+    const dialogRef = this.dialog.open(EditHardwarePanelDialogComponent, {
+      width: '600px',
+      disableClose: false,
+      data: {
+        hardwarePanel: this.hardwarePanelDto
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'updated') {
+        // Refresh the data to reflect the changes
+        this.fetchData();
+      }
+    });
   }
 
   showInputSelectorDetails(data: HardwareInputDto): void {
@@ -227,9 +253,11 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
   deleteHardwareInput(hardwareInput: HardwareInputDto) {
     const dialogRef = this.dialog.open(DeleteHardwareInputDialogComponent, {
       width: '500px',
-      disableClose: false
+      disableClose: false,
+      data: {
+        hardwareInput: hardwareInput
+      }
     });
-    dialogRef.componentInstance.hardwareInput = hardwareInput;
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.action === 'deleted') {

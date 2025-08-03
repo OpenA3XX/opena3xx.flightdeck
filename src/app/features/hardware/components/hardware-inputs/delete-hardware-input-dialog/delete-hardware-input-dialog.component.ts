@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 import { HardwareInputDto } from 'src/app/shared/models/models';
@@ -12,23 +12,21 @@ import { DialogWrapperConfig } from 'src/app/shared/components/ui/dialog-wrapper
     styleUrls: ['./delete-hardware-input-dialog.component.scss'],
     standalone: false
 })
-export class DeleteHardwareInputDialogComponent implements OnInit {
+export class DeleteHardwareInputDialogComponent {
   disabled: boolean = true;
   hardwareInputName: string = '';
   wrapperConfig: DialogWrapperConfig;
-
-  @Input() hardwareInput: HardwareInputDto;
+  hardwareInput: HardwareInputDto;
 
   constructor(
     private dialogRef: MatDialogRef<DeleteHardwareInputDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { hardwareInput: HardwareInputDto },
     private dataService: DataService,
     private snackBar: MatSnackBar
   ) {
-    this.initializeWrapperConfig();
-  }
-
-  ngOnInit() {
+    this.hardwareInput = data.hardwareInput;
     this.hardwareInputName = this.hardwareInput.name;
+    this.initializeWrapperConfig();
     this.updateWrapperConfig();
   }
 

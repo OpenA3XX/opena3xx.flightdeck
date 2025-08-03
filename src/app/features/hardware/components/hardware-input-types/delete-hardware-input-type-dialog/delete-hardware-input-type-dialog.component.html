@@ -1,15 +1,11 @@
-<opena3xx-dialog-wrapper
-  [config]="wrapperConfig"
-  (close)="onCancel()">
-
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
   <div class="content-area">
     <div class="confirmation-message">
-      Are you sure you want to delete <b>{{ hardwareInputName }}</b> Hardware Input?
+      Are you sure you want to delete <b>{{ hardwareInputTypeName }}</b> Hardware Input Type?
     </div>
 
     <div class="warning-message">
-      Enter the word <b>{{ hardwareInputName }}</b> to confirm. This will <u>permanently</u> delete
-      the entity.
+      <span style="color: red;">Enter the word <b>{{ hardwareInputTypeName }}</b> to confirm. This will <u>permanently</u> delete the hardware input type.</span>
     </div>
 
     <form autocomplete="off">
@@ -25,8 +21,8 @@
       Cancel
     </button>
     <button mat-raised-button color="warn" (click)="onConfirm()" [disabled]="disabled">
-      <mat-icon>delete</mat-icon>
-      Delete
+      <mat-icon>delete_forever</mat-icon>
+      Delete Input Type
     </button>
   </div>
 </opena3xx-dialog-wrapper>

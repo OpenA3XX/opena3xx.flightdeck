@@ -6,24 +6,24 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
-import { HardwareInputDto, HardwareInputTypeDto, HardwarePanelOverviewDto } from 'src/app/shared/models/models';
-import { AddHardwareInputSelectorDialogComponent } from '../../hardware-input-selectors/add-hardware-input-selector-dialog/add-hardware-input-selector-dialog.component';
-import { DeleteHardwareInputSelectorDialogComponent } from '../../hardware-input-selectors/delete-hardware-input-selector-dialog/delete-hardware-input-selector-dialog.component';
-import { DeleteHardwareInputDialogComponent } from '../delete-hardware-input-dialog/delete-hardware-input-dialog.component';
+import { HardwareOutputDto, HardwareOutputTypeDto, HardwarePanelOverviewDto } from 'src/app/shared/models/models';
+import { AddHardwareOutputSelectorDialogComponent } from '../../hardware-output-selectors/add-hardware-output-selector-dialog/add-hardware-output-selector-dialog.component';
+import { DeleteHardwareOutputSelectorDialogComponent } from '../../hardware-output-selectors/delete-hardware-output-selector-dialog/delete-hardware-output-selector-dialog.component';
+import { DeleteHardwareOutputDialogComponent } from '../delete-hardware-output-dialog/delete-hardware-output-dialog.component';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { ThemeService } from 'src/app/core/services/theme.service';
 
 @Component({
-  selector: 'opena3xx-manage-hardware-inputs',
-  templateUrl: './manage-hardware-inputs.component.html',
-  styleUrls: ['./manage-hardware-inputs.component.scss'],
+  selector: 'opena3xx-manage-hardware-outputs',
+  templateUrl: './manage-hardware-outputs.component.html',
+  styleUrls: ['./manage-hardware-outputs.component.scss'],
   standalone: false
 })
-export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'name', 'hardwareInputType', 'hardwarePanelId', 'selectorsCount', 'actions'];
-  dataSource = new MatTableDataSource<HardwareInputDto>();
+export class ManageHardwareOutputsComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['id', 'name', 'hardwareOutputType', 'hardwarePanelId', 'selectorsCount', 'actions'];
+  dataSource = new MatTableDataSource<HardwareOutputDto>();
   hardwarePanels: HardwarePanelOverviewDto[] = [];
-  hardwareInputTypes: HardwareInputTypeDto[] = [];
+  hardwareOutputTypes: HardwareOutputTypeDto[] = [];
   filterForm: FormGroup;
   loading = false;
   headerActions: PageHeaderAction[] = [];
@@ -46,7 +46,7 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadHardwarePanels();
-    this.loadHardwareInputTypes();
+    this.loadHardwareOutputTypes();
     this.setupFilterListeners();
     this.loadData();
 
@@ -65,7 +65,7 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
   private initializeFilterForm(): void {
     this.filterForm = this.formBuilder.group({
       panelId: [''],
-      hardwareInputType: ['']
+      hardwareOutputType: ['']
     });
   }
 
@@ -89,12 +89,12 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async loadHardwareInputTypes(): Promise<void> {
+  private async loadHardwareOutputTypes(): Promise<void> {
     try {
-      const types = await this.dataService.getAllHardwareInputTypes().toPromise();
-      this.hardwareInputTypes = types as HardwareInputTypeDto[];
+      const types = await this.dataService.getAllHardwareOutputTypes().toPromise();
+      this.hardwareOutputTypes = types as HardwareOutputTypeDto[];
     } catch (error) {
-      console.error('Error loading hardware input types:', error);
+      console.error('Error loading hardware output types:', error);
     }
   }
 
@@ -103,25 +103,25 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
       this.loading = true;
       const filterValues = this.filterForm.value;
       const panelId = filterValues.panelId;
-      const inputType = filterValues.hardwareInputType;
+      const outputType = filterValues.hardwareOutputType;
 
-      console.log('Loading data with filters:', { panelId, inputType });
+      console.log('Loading data with filters:', { panelId, outputType });
 
-      // Get all inputs first
-      let inputs = await this.dataService.getAllHardwareInputs(panelId).toPromise() as HardwareInputDto[];
-      console.log('Raw inputs loaded:', inputs.length);
+      // Get all outputs first
+      let outputs = await this.dataService.getAllHardwareOutputs(panelId).toPromise() as HardwareOutputDto[];
+      console.log('Raw outputs loaded:', outputs.length);
 
-      // Apply client-side filtering for hardware input type
-      if (inputType && inputType !== '') {
-        inputs = inputs.filter(input => input.hardwareInputType === inputType);
-        console.log('After input type filtering:', inputs.length);
+      // Apply client-side filtering for hardware output type
+      if (outputType && outputType !== '') {
+        outputs = outputs.filter(output => output.hardwareOutputType === outputType);
+        console.log('After output type filtering:', outputs.length);
       }
 
-      this.dataSource.data = inputs;
+      this.dataSource.data = outputs;
       this.dataSource.sort = this.sort;
-      console.log('Data source updated with', inputs.length, 'items');
+      console.log('Data source updated with', outputs.length, 'items');
     } catch (error) {
-      console.error('Error loading hardware inputs:', error);
+      console.error('Error loading hardware outputs:', error);
     } finally {
       this.loading = false;
     }
@@ -137,12 +137,12 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
       this.loadData();
     });
 
-    // Listen to hardware input type changes with debouncing
-    this.filterForm.get('hardwareInputType')?.valueChanges.pipe(
+    // Listen to hardware output type changes with debouncing
+    this.filterForm.get('hardwareOutputType')?.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe((value) => {
-      console.log('Input type filter changed to:', value);
+      console.log('Output type filter changed to:', value);
       this.loadData();
     });
   }
@@ -151,10 +151,10 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  onAddSelector(hardwareInput: HardwareInputDto): void {
-    const dialogRef = this.dialog.open(AddHardwareInputSelectorDialogComponent, {
+  onAddSelector(hardwareOutput: HardwareOutputDto): void {
+    const dialogRef = this.dialog.open(AddHardwareOutputSelectorDialogComponent, {
       width: '500px',
-      data: { hardwareInput }
+      data: { hardwareOutput }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -164,10 +164,10 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteSelector(hardwareInput: HardwareInputDto, selector: any): void {
-    const dialogRef = this.dialog.open(DeleteHardwareInputSelectorDialogComponent, {
+  onDeleteSelector(hardwareOutput: HardwareOutputDto, selector: any): void {
+    const dialogRef = this.dialog.open(DeleteHardwareOutputSelectorDialogComponent, {
       width: '400px',
-      data: { hardwareInput, selector }
+      data: { hardwareOutput, selector }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -182,14 +182,14 @@ export class ManageHardwareInputsComponent implements OnInit, OnDestroy {
     return panel ? panel.name : `Panel ${panelId}`;
   }
 
-  getSelectorsCount(hardwareInput: HardwareInputDto): number {
-    return hardwareInput.hardwareInputSelectors?.length || 0;
+  getSelectorsCount(hardwareOutput: HardwareOutputDto): number {
+    return hardwareOutput.hardwareOutputSelectors?.length || 0;
   }
 
-  onDeleteHardwareInput(hardwareInput: HardwareInputDto): void {
-    const dialogRef = this.dialog.open(DeleteHardwareInputDialogComponent, {
+  onDeleteHardwareOutput(hardwareOutput: HardwareOutputDto): void {
+    const dialogRef = this.dialog.open(DeleteHardwareOutputDialogComponent, {
       width: '500px',
-      data: { hardwareInput }
+      data: { hardwareOutput }
     });
 
     dialogRef.afterClosed().subscribe(result => {

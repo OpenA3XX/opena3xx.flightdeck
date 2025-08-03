@@ -143,6 +143,17 @@
           <span *ngIf="isExpanded || isShowing" class="full-width">Hardware Inputs</span>
         </mat-list-item>
         <mat-list-item
+          (click)="apiAvailabilityStatus ? clickManageHardwareOutputs() : null"
+          [matTooltipDisabled]="isExpanded"
+          class="parent"
+          [class.disabled]="!apiAvailabilityStatus"
+          [matTooltip]="!apiAvailabilityStatus ? 'API not available - Navigation disabled' : 'Hardware Outputs'"
+          matTooltipPosition="right"
+        >
+          <mat-icon matListItemIcon>output</mat-icon>
+          <span *ngIf="isExpanded || isShowing" class="full-width">Hardware Outputs</span>
+        </mat-list-item>
+        <mat-list-item
           (click)="apiAvailabilityStatus ? clickManageHardwareBoards() : null"
           [matTooltipDisabled]="isExpanded"
           class="parent"

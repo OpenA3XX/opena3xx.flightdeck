@@ -33,7 +33,8 @@
   z-index: 1000;
   backdrop-filter: blur(10px);
   box-shadow: var(--shadow-sm);
-  background-color: #0360ec;
+  // background-color: #0360ec;
+  background: linear-gradient(to bottom, #0061ed, #448bf0);
 
   // Theme toggle button styles
   button[matTooltip="Toggle Theme"] {

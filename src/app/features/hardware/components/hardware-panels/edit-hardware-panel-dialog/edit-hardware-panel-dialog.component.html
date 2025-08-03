@@ -1,0 +1,41 @@
+<opena3xx-dialog-wrapper
+  [config]="wrapperConfig"
+  (close)="onCancel()">
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading hardware panel details...</p>
+  </div>
+
+  <form *ngIf="!loading" [formGroup]="editHardwarePanelForm" (ngSubmit)="onSubmit()">
+    <opena3xx-input [field]="hardwarePanelNameFieldConfig" [group]="editHardwarePanelForm">
+    </opena3xx-input>
+
+    <opena3xx-forms-select [field]="aircraftModelFieldConfig" [group]="editHardwarePanelForm">
+    </opena3xx-forms-select>
+
+    <opena3xx-forms-select [field]="cockpitAreaFieldConfig" [group]="editHardwarePanelForm">
+    </opena3xx-forms-select>
+
+    <opena3xx-forms-select
+      [field]="hardwarePanelOwnerFieldConfig"
+      [group]="editHardwarePanelForm"
+    >
+    </opena3xx-forms-select>
+  </form>
+
+  <div dialog-actions>
+    <button mat-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!editHardwarePanelForm.valid || loading">
+      <mat-icon>check</mat-icon>
+      Update
+    </button>
+  </div>
+</opena3xx-dialog-wrapper>

@@ -4,12 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 // Hardware Components
 
 
-import { EditHardwarePanelComponent } from './features/hardware/components/hardware-panels/edit-hardware-panel/edit-hardware-panel.component';
+
 import { ManageHardwareBoardsComponent } from './features/hardware/components/hardware-boards/manage-hardware-boards/manage-hardware-board.component';
 import { ManageHardwareInputTypesComponent } from './features/hardware/components/hardware-input-types/manage-hardware-input-types/manage-hardware-input-types.component';
 import { ManageHardwareOutputTypesComponent } from './features/hardware/components/hardware-output-types/manage-hardware-output-types/manage-hardware-output-types.component';
 import { ManageHardwarePanelsComponent } from './features/hardware/components/hardware-panels/manage-hardware-panels/manage-hardware-panels.component';
 import { ManageHardwareInputsComponent } from './features/hardware/components/hardware-inputs/manage-hardware-inputs/manage-hardware-inputs.component';
+import { ManageHardwareOutputsComponent } from './features/hardware/components/hardware-outputs/manage-hardware-outputs/manage-hardware-outputs.component';
 
 import { ViewHardwarePanelDetailsComponent } from './features/hardware/components/hardware-panels/view-hardware-panel-details/view-hardware-panel-details.component';
 
@@ -47,10 +48,7 @@ const routes: Routes = [
     component: ManageHardwarePanelsComponent,
   },
 
-  {
-    path: 'edit/hardware-panel',
-    component: EditHardwarePanelComponent,
-  },
+
   {
     path: 'view/hardware-panel-details',
     component: ViewHardwarePanelDetailsComponent,
@@ -69,6 +67,10 @@ const routes: Routes = [
   {
     path: 'manage/hardware-inputs',
     component: ManageHardwareInputsComponent,
+  },
+  {
+    path: 'manage/hardware-outputs',
+    component: ManageHardwareOutputsComponent,
   },
 
   {

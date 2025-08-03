@@ -11,6 +11,7 @@ import { DataTableConfig, TableColumnConfig, DataTableEvent } from 'src/app/shar
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { AddHardwarePanelDialogComponent } from '../add-hardware-panel-dialog/add-hardware-panel-dialog.component';
 import { DeleteHardwarePanelDialogComponent } from '../delete-hardware-panel-dialog/delete-hardware-panel-dialog.component';
+import { EditHardwarePanelDialogComponent } from '../edit-hardware-panel-dialog/edit-hardware-panel-dialog.component';
 
 @Component({
     selector: 'opena3xx-manage-hardware-panels',
@@ -49,8 +50,8 @@ export class ManageHardwarePanelsComponent implements OnInit {
         key: 'name',
         label: 'Name',
         sortable: true,
-        width: '25%',
-        maxWidth: '100px',
+        width: '20%',
+        maxWidth: '80px',
         type: 'text'
       },
       {
@@ -73,28 +74,35 @@ export class ManageHardwarePanelsComponent implements OnInit {
         key: 'cockpitArea',
         label: 'Cockpit Area',
         sortable: true,
-        width: '15%',
-        maxWidth: '100px',
+        width: '10%',
+        maxWidth: '80px',
         type: 'text'
       },
       {
         key: 'owner',
         label: 'Cockpit Owner',
         sortable: true,
-        width: '15%',
-        maxWidth: '100px',
+        width: '10%',
+        maxWidth: '80px',
         type: 'text'
       },
       {
         key: 'actions',
         label: 'Actions',
-        width: '300px',
+        width: '450px',
         type: 'actions',
         actions: [
           {
+            label: 'Edit',
+            icon: 'edit',
+            color: 'primary',
+            tooltip: 'Edit',
+            action: (item) => this.onEditHardwarePanel(item)
+          },
+          {
             label: 'Manage',
             icon: 'settings',
-            color: 'primary',
+            color: 'accent',
             tooltip: 'Manage',
             action: (item) => this.onViewDetailsClick(item.id)
           },
@@ -176,6 +184,21 @@ export class ManageHardwarePanelsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.action === 'deleted') {
         // Refresh the data to reflect the deletion
+        this.loadData();
+      }
+    });
+  }
+
+  onEditHardwarePanel(hardwarePanel: HardwarePanelOverviewDto) {
+    const dialogRef = this.dialog.open(EditHardwarePanelDialogComponent, {
+      width: '600px',
+      disableClose: false,
+      data: { hardwarePanel }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'updated') {
+        // Refresh the data to reflect the update
         this.loadData();
       }
     });

@@ -8,6 +8,7 @@ import { DataTableConfig, TableColumnConfig, DataTableEvent } from 'src/app/shar
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { AddHardwareInputTypeDialogComponent } from '../add-hardware-input-type-dialog/add-hardware-input-type-dialog.component';
 import { EditHardwareInputTypeDialogComponent } from '../edit-hardware-input-type-dialog/edit-hardware-input-type-dialog.component';
+import { DeleteHardwareInputTypeDialogComponent } from '../delete-hardware-input-type-dialog/delete-hardware-input-type-dialog.component';
 
 @Component({
     selector: 'opena3xx-manage-hardware-input-types',
@@ -60,6 +61,13 @@ export class ManageHardwareInputTypesComponent implements OnInit {
             color: 'primary',
             tooltip: 'Edit',
             action: (item) => this.onEditClick(item.id)
+          },
+          {
+            label: 'Delete',
+            icon: 'delete',
+            color: 'warn',
+            tooltip: 'Delete',
+            action: (item) => this.onDeleteHardwareInputType(item)
           }
         ]
       }
@@ -143,6 +151,20 @@ export class ManageHardwareInputTypesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.action === 'added') {
         // Refresh the data after successful addition
+        this.loadData();
+      }
+    });
+  }
+
+  onDeleteHardwareInputType(hardwareInputType: HardwareInputTypeDto) {
+    const dialogRef = this.dialog.open(DeleteHardwareInputTypeDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { hardwareInputType }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
         this.loadData();
       }
     });

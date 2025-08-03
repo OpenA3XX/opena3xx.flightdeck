@@ -262,9 +262,11 @@ export class ManageAircraftModelsComponent implements OnInit {
       console.log('Opening delete dialog for aircraft model:', aircraftModel);
       const dialogRef = this.dialog.open(DeleteAircraftModelDialogComponent, {
         width: '500px',
-        disableClose: false
+        disableClose: false,
+        data: {
+          aircraftModel: aircraftModel
+        }
       });
-      dialogRef.componentInstance.aircraftModel = aircraftModel;
 
       dialogRef.afterClosed().subscribe((result) => {
         if (result === true) {

@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AircraftModelDto } from 'src/app/shared/models/models';
 import { DialogWrapperConfig } from 'src/app/shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 
@@ -9,19 +9,19 @@ import { DialogWrapperConfig } from 'src/app/shared/components/ui/dialog-wrapper
     styleUrls: ['./delete-aircraft-model-dialog.component.scss'],
     standalone: false
 })
-export class DeleteAircraftModelDialogComponent implements OnInit {
+export class DeleteAircraftModelDialogComponent {
   disabled: boolean = true;
   aircraftModelName: string = '';
   wrapperConfig: DialogWrapperConfig;
+  aircraftModel: AircraftModelDto;
 
-  @Input() aircraftModel: AircraftModelDto;
-
-  constructor(private dialogRef: MatDialogRef<DeleteAircraftModelDialogComponent>) {
-    this.initializeWrapperConfig();
-  }
-
-  ngOnInit() {
+  constructor(
+    private dialogRef: MatDialogRef<DeleteAircraftModelDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { aircraftModel: AircraftModelDto }
+  ) {
+    this.aircraftModel = data.aircraftModel;
     this.aircraftModelName = this.aircraftModel.name;
+    this.initializeWrapperConfig();
     this.updateWrapperConfig();
   }
 

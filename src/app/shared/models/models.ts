@@ -96,11 +96,23 @@ export interface HardwareOutputDto {
   id: number;
   name: string;
   hardwareOutputType: string;
-  outputSelectors: HardwareOutputSelectorDto[];
+  hardwarePanelId: number;
+  hardwareOutputSelectors: HardwareOutputSelectorDto[];
 }
 
 export interface HardwareOutputSelectorDto {
   id: number;
+  name: string;
+}
+
+export interface AddHardwareOutputDto {
+  name: string;
+  hardwareOutputType: string;
+  hardwarePanelId: number;
+  hardwareOutputSelectors?: HardwareOutputSelectorDto[];
+}
+
+export interface AddHardwareOutputSelectorDto {
   name: string;
 }
 

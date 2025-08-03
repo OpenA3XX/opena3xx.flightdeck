@@ -176,6 +176,10 @@ export class AppComponent implements OnInit, OnDestroy
     this.router.navigateByUrl(`/manage/hardware-inputs`);
   }
 
+  clickManageHardwareOutputs() {
+    this.router.navigateByUrl(`/manage/hardware-outputs`);
+  }
+
   clickSettings() {
     this.router.navigateByUrl(`/settings`);
   }

@@ -8,6 +8,7 @@ import { DataTableConfig, TableColumnConfig, DataTableEvent } from 'src/app/shar
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { AddHardwareOutputTypeDialogComponent } from '../add-hardware-output-type-dialog/add-hardware-output-type-dialog.component';
 import { EditHardwareOutputTypeDialogComponent } from '../edit-hardware-output-type-dialog/edit-hardware-output-type-dialog.component';
+import { DeleteHardwareOutputTypeDialogComponent } from '../delete-hardware-output-type-dialog/delete-hardware-output-type-dialog.component';
 
 @Component({
     selector: 'opena3xx-manage-hardware-output-types',
@@ -60,6 +61,13 @@ export class ManageHardwareOutputTypesComponent implements OnInit {
             color: 'primary',
             tooltip: 'Edit',
             action: (item) => this.onEditClick(item.id)
+          },
+          {
+            label: 'Delete',
+            icon: 'delete',
+            color: 'warn',
+            tooltip: 'Delete',
+            action: (item) => this.onDeleteHardwareOutputType(item)
           }
         ]
       }
@@ -143,6 +151,20 @@ export class ManageHardwareOutputTypesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.action === 'added') {
         // Refresh the data after successful addition
+        this.loadData();
+      }
+    });
+  }
+
+  onDeleteHardwareOutputType(hardwareOutputType: HardwareOutputTypeDto) {
+    const dialogRef = this.dialog.open(DeleteHardwareOutputTypeDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { hardwareOutputType }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
         this.loadData();
       }
     });

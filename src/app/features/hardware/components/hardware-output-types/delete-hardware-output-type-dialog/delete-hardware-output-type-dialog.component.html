@@ -1,11 +1,11 @@
 <opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
   <div class="content-area">
     <div class="confirmation-message">
-      Are you sure you want to delete <b>{{ hardwarePanelName }}</b> Hardware Panel?
+      Are you sure you want to delete <b>{{ hardwareOutputTypeName }}</b> Hardware Output Type?
     </div>
 
     <div class="warning-message">
-      <span style="color: red;">Enter the word <b>{{ hardwarePanelName }}</b> to confirm. This will <u>permanently</u> delete the hardware panel.</span>
+      <span style="color: red;">Enter the word <b>{{ hardwareOutputTypeName }}</b> to confirm. This will <u>permanently</u> delete the hardware output type</span>
     </div>
 
     <form autocomplete="off">
@@ -22,7 +22,7 @@
     </button>
     <button mat-raised-button color="warn" (click)="onConfirm()" [disabled]="disabled">
       <mat-icon>delete_forever</mat-icon>
-      Delete Panel
+      Delete Output Type
     </button>
   </div>
 </opena3xx-dialog-wrapper>

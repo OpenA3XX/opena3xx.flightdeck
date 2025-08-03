@@ -5,10 +5,15 @@ import {
   AddHardwarePanelDto,
   AddHardwareInputDto,
   AddHardwareInputSelectorDto,
+  AddHardwareOutputDto,
+  AddHardwareOutputSelectorDto,
+  AircraftModelDto,
   HardwareBoardDto,
   HardwareInputDto,
   HardwareInputSelectorDto,
   HardwareInputTypeDto,
+  HardwareOutputDto,
+  HardwareOutputSelectorDto,
   HardwareOutputTypeDto,
   HardwarePanelOverviewDto,
   MapExtenderBitToHardwareInputSelectorDto,
@@ -69,6 +74,10 @@ export class DataService {
     return this.http.patch(`${this.BASE_URL}/hardware-input-types`, hardwareInputTypeDto);
   }
 
+  deleteHardwareInputType(id: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-input-types/${id}`);
+  }
+
   getAllHardwareOutputTypes() {
     return this.http.get(`${this.BASE_URL}/hardware-output-types`);
   }
@@ -79,6 +88,10 @@ export class DataService {
 
   updateHardwareOutputType(hardwareOutputTypeDto: HardwareOutputTypeDto) {
     return this.http.patch(`${this.BASE_URL}/hardware-output-types`, hardwareOutputTypeDto);
+  }
+
+  deleteHardwareOutputType(id: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-output-types/${id}`);
   }
 
   getAllSimulatorEvents() {
@@ -251,6 +264,10 @@ export class DataService {
     return this.http.delete(`${this.BASE_URL}/hardware-panel/${id}`);
   }
 
+  updateHardwarePanel(id: number, hardwarePanelDto: AddHardwarePanelDto) {
+    return this.http.patch<AddHardwarePanelDto>(`${this.BASE_URL}/hardware-panel/${id}`, hardwarePanelDto);
+  }
+
   updateHardwareBoard(id: number, hardwareBoardDto: HardwareBoardDto) {
     return this.http.patch<HardwareBoardDto>(`${this.BASE_URL}/hardware-boards/${id}`, hardwareBoardDto);
   }
@@ -269,5 +286,46 @@ export class DataService {
 
   deleteHardwareInputSelector(hardwareInputId: number, selectorId: number) {
     return this.http.delete(`${this.BASE_URL}/hardware-input-selectors/${selectorId}`);
+  }
+
+  // Hardware Output API Methods
+  getAllHardwareOutputs(panelId?: number) {
+    const url = panelId
+      ? `${this.BASE_URL}/hardware-outputs/all?panelId=${panelId}`
+      : `${this.BASE_URL}/hardware-outputs/all`;
+    return this.http.get<HardwareOutputDto[]>(url);
+  }
+
+  getHardwareOutputById(id: number) {
+    return this.http.get<HardwareOutputDto>(`${this.BASE_URL}/hardware-outputs/${id}`);
+  }
+
+  addHardwareOutput(hardwareOutputDto: AddHardwareOutputDto) {
+    return this.http.post<HardwareOutputDto>(`${this.BASE_URL}/hardware-outputs`, hardwareOutputDto);
+  }
+
+  updateHardwareOutput(hardwareOutputDto: HardwareOutputDto) {
+    return this.http.patch<HardwareOutputDto>(`${this.BASE_URL}/hardware-outputs`, hardwareOutputDto);
+  }
+
+  deleteHardwareOutput(id: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-outputs/${id}`);
+  }
+
+  // Hardware Output Selector API Methods
+  addHardwareOutputSelector(hardwareOutputId: number, selector: AddHardwareOutputSelectorDto) {
+    return this.http.post<HardwareOutputSelectorDto>(`${this.BASE_URL}/hardware-output-selectors`, {
+      name: selector.name,
+      hardwareOutputId: hardwareOutputId
+    });
+  }
+
+  deleteHardwareOutputSelector(hardwareOutputId: number, selectorId: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-output-selectors/${selectorId}`);
+  }
+
+  // Aircraft Models API Methods
+  getAllAircraftModels() {
+    return this.http.get<AircraftModelDto[]>(`${this.BASE_URL}/aircraft-models`);
   }
 }
