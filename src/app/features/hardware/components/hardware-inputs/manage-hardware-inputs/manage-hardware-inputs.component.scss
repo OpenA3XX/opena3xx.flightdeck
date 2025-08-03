@@ -1,0 +1,98 @@
+.filter-card {
+  margin-bottom: 16px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.table-card {
+  .table-container {
+    position: relative;
+    min-height: 200px;
+  }
+
+  .data-table {
+    width: 100%;
+  }
+
+  // Column width adjustments
+  .mat-column-id {
+    width: 60px;
+    max-width: 60px;
+  }
+
+  .mat-column-name {
+    width: 100px;
+    min-width: 100px;
+  }
+  .mat-column-actions {
+    width: 500px;
+    min-width: 500px;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .action-button {
+    min-width: auto;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  gap: 16px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+  gap: 16px;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+  }
+
+  h3 {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  p {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+// Dark theme support
+.dark-theme {
+  .empty-state {
+    h3 {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}

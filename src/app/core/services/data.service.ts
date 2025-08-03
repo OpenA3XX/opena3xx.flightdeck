@@ -4,8 +4,10 @@ import { Injectable } from '@angular/core';
 import {
   AddHardwarePanelDto,
   AddHardwareInputDto,
+  AddHardwareInputSelectorDto,
   HardwareBoardDto,
   HardwareInputDto,
+  HardwareInputSelectorDto,
   HardwareInputTypeDto,
   HardwareOutputTypeDto,
   HardwarePanelOverviewDto,
@@ -243,5 +245,17 @@ export class DataService {
 
   deleteHardwareInput(id: number) {
     return this.http.delete(`${this.BASE_URL}/hardware-inputs/${id}`);
+  }
+
+  // Hardware Input Selector API Methods
+  addHardwareInputSelector(hardwareInputId: number, selector: AddHardwareInputSelectorDto) {
+    return this.http.post<HardwareInputSelectorDto>(`${this.BASE_URL}/hardware-input-selectors`, {
+      name: selector.name,
+      hardwareInputId: hardwareInputId
+    });
+  }
+
+  deleteHardwareInputSelector(hardwareInputId: number, selectorId: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-input-selectors/${selectorId}`);
   }
 }

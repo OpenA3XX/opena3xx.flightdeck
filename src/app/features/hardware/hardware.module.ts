@@ -35,6 +35,9 @@ import { RegisterHardwareBoardDialogComponent } from './components/hardware-boar
 import { EditHardwareInputTypeDialogComponent } from './components/hardware-input-types/edit-hardware-input-type-dialog/edit-hardware-input-type-dialog.component';
 import { EditHardwareOutputTypeDialogComponent } from './components/hardware-output-types/edit-hardware-output-type-dialog/edit-hardware-output-type-dialog.component';
 import { AddHardwareInputDialogComponent } from './components/hardware-inputs/add-hardware-input-dialog/add-hardware-input-dialog.component';
+import { ManageHardwareInputsComponent } from './components/hardware-inputs/manage-hardware-inputs/manage-hardware-inputs.component';
+import { AddHardwareInputSelectorDialogComponent } from './components/hardware-inputs/add-hardware-input-selector-dialog/add-hardware-input-selector-dialog.component';
+import { DeleteHardwareInputSelectorDialogComponent } from './components/hardware-inputs/delete-hardware-input-selector-dialog/delete-hardware-input-selector-dialog.component';
 
 // Hardware Form Components
 import { LinkHardwareInputSelectorsFormComponent } from './components/hardware-input-selectors/link-hardware-input-selectors-form/link-hardware-input-selectors-form.component';
@@ -72,6 +75,9 @@ import { DataService } from 'src/app/core/services/data.service';
     MapHardwareInputSelectorsFormComponent,
     MapHardwareOutputSelectorsFormComponent,
     AddHardwareInputDialogComponent,
+    ManageHardwareInputsComponent,
+    AddHardwareInputSelectorDialogComponent,
+    DeleteHardwareInputSelectorDialogComponent,
 
   ],
   imports: [
@@ -110,6 +116,9 @@ import { DataService } from 'src/app/core/services/data.service';
     MapHardwareInputSelectorsFormComponent,
     MapHardwareOutputSelectorsFormComponent,
     AddHardwareInputDialogComponent,
+    ManageHardwareInputsComponent,
+    AddHardwareInputSelectorDialogComponent,
+    DeleteHardwareInputSelectorDialogComponent,
 
   ],
   providers: [

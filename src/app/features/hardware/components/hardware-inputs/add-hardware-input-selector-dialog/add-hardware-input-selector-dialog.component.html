@@ -1,0 +1,26 @@
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
+  <form [formGroup]="addSelectorForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Selector Name</mat-label>
+      <input matInput
+             type="text"
+             formControlName="name"
+             placeholder="Enter selector name">
+      <mat-icon matSuffix>text_format</mat-icon>
+      <mat-hint>Enter a descriptive name for this selector</mat-hint>
+      <mat-error *ngIf="addSelectorForm.get('name')?.hasError('required')">
+        Selector Name is Required
+      </mat-error>
+    </mat-form-field>
+
+
+  </form>
+
+  <div dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="addSelectorForm.invalid" (click)="onSubmit()">
+      <mat-icon>check</mat-icon>
+      Add Selector
+    </button>
+  </div>
+</opena3xx-dialog-wrapper>

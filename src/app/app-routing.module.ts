@@ -9,6 +9,7 @@ import { ManageHardwareBoardsComponent } from './features/hardware/components/ha
 import { ManageHardwareInputTypesComponent } from './features/hardware/components/hardware-input-types/manage-hardware-input-types/manage-hardware-input-types.component';
 import { ManageHardwareOutputTypesComponent } from './features/hardware/components/hardware-output-types/manage-hardware-output-types/manage-hardware-output-types.component';
 import { ManageHardwarePanelsComponent } from './features/hardware/components/hardware-panels/manage-hardware-panels/manage-hardware-panels.component';
+import { ManageHardwareInputsComponent } from './features/hardware/components/hardware-inputs/manage-hardware-inputs/manage-hardware-inputs.component';
 
 import { ViewHardwarePanelDetailsComponent } from './features/hardware/components/hardware-panels/view-hardware-panel-details/view-hardware-panel-details.component';
 
@@ -65,6 +66,10 @@ const routes: Routes = [
     component: ManageHardwareOutputTypesComponent,
   },
 
+  {
+    path: 'manage/hardware-inputs',
+    component: ManageHardwareInputsComponent,
+  },
 
   {
     path: 'settings',
