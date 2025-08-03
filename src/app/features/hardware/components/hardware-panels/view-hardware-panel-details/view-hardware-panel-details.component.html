@@ -243,7 +243,7 @@
       </ng-container>
 
       <!-- Actions Column -->
-      <ng-container matColumnDef="action">
+      <!-- <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let output">
           <div class="action-buttons">
@@ -267,7 +267,7 @@
               Map
             </button>
             <button
-              (click)="mapOutputSelector(output)"
+              (click)="linkOutputSelector(output)"
               *ngIf="output.hardwareOutputSelectors[0]?.isHardwareOutputSelectorMappedWithHardware === true"
               mat-raised-button
               color="warn"
@@ -295,7 +295,73 @@
             </button>
           </div>
         </td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let output">
+          <div class="action-buttons">
+            <button
+              (click)="showOutputSelectorDetails(output)"
+              mat-raised-button
+              color="primary"
+              class="action-button"
+              matTooltip="View {{ output.hardwareOutputSelectors.length }} Output(s)"
+              matTooltipPosition="above">
+              <mat-icon>remove_red_eye</mat-icon>
+              View
+            </button>
+            <button
+              (click)="mapOutputSelector(output)"
+              *ngIf="output.hardwareOutputSelectors?.[0]?.isHardwareOutputSelectorMappedWithHardware === false"
+              mat-raised-button
+              color="primary"
+              class="action-button">
+              <mat-icon>link</mat-icon>
+              Map
+            </button>
+            <button
+              (click)="mapOutputSelector(output)"
+              *ngIf="output.hardwareOutputSelectors?.[0]?.isHardwareOutputSelectorMappedWithHardware === true"
+              mat-raised-button
+              color="warn"
+              class="action-button edit-button">
+              <mat-icon>link</mat-icon>
+              Edit Map
+            </button>
+            <button
+              (click)="linkOutputSelector(output)"
+              *ngIf="output.hardwareOutputSelectors?.[0]?.simulatorEventDto !== null"
+              mat-raised-button
+              color="warn"
+              class="action-button edit-button">
+              <mat-icon>laptop</mat-icon>
+              Edit Link
+            </button>
+            <button
+              (click)="linkOutputSelector(output)"
+              *ngIf="output.hardwareOutputSelectors?.[0]?.simulatorEventDto === null"
+              mat-raised-button
+              color="primary"
+              class="action-button">
+              <mat-icon>laptop</mat-icon>
+              Set Link
+            </button>
+            <button
+              (click)="deleteHardwareOutput(output)"
+              mat-raised-button
+              color="warn"
+              class="action-button"
+              matTooltip="Delete Hardware Output"
+              matTooltipPosition="above">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </div>
+        </td>
       </ng-container>
+
+
 
       <tr mat-header-row *matHeaderRowDef="displayedOutputColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedOutputColumns;"></tr>

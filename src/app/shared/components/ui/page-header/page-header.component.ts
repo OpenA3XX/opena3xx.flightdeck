@@ -19,6 +19,7 @@ export class PageHeaderComponent {
   @Input() subtitle?: string;
   @Input() icon?: string;
   @Input() actions: PageHeaderAction[] = [];
+  @Input() sticky: boolean = true; // Default to sticky behavior
 
   onActionClick(action: PageHeaderAction): void {
     if (!this.getDisabledState(action)) {

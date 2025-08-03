@@ -18,6 +18,7 @@ import { EditHardwarePanelDialogComponent } from '../edit-hardware-panel-dialog/
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { ThemeService } from 'src/app/core/services/theme.service';
 import { Subscription } from 'rxjs';
+import { DeleteHardwareOutputDialogComponent } from '../../hardware-outputs/delete-hardware-output-dialog/delete-hardware-output-dialog.component';
 
 @Component({
     selector: 'opena3xx-view-hardware-panel-details',
@@ -230,21 +231,24 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
     });
   }
 
-  showOutputSelectorDetails(data: HardwareInputDto) {
+  showOutputSelectorDetails(data: HardwareOutputDto) {
     this.viewHardwareInputOutputSelectorsDialog.open(ViewHardwareOutputSelectorsDialogComponent, {
       data: data,
       width: '600px',
     });
   }
 
-  mapOutputSelector(data: HardwareInputDto) {
-    this.viewHardwareInputOutputSelectorsDialog.open(MapHardwareOutputSelectorsDialogComponent, {
+  mapOutputSelector(data: HardwareOutputDto) {
+    const dialogRef = this.viewHardwareInputOutputSelectorsDialog.open(MapHardwareOutputSelectorsDialogComponent, {
       data: data,
       width: '900px',
     });
+    dialogRef.afterClosed().subscribe(() => {
+      this.fetchData();
+    });
   }
 
-  linkOutputSelector(data: HardwareInputDto) {
+  linkOutputSelector(data: HardwareOutputDto) {
     // TODO: Implement link output selector functionality
     console.log('Link Output Selector clicked for:', data);
     // This would typically open a dialog similar to linkInputSelector
@@ -256,6 +260,23 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
       disableClose: false,
       data: {
         hardwareInput: hardwareInput
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
+        // Refresh the data to reflect the deletion
+        this.fetchData();
+      }
+    });
+  }
+
+  deleteHardwareOutput(hardwareOutput: HardwareOutputDto) {
+    const dialogRef = this.dialog.open(DeleteHardwareOutputDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: {
+        hardwareOutput: hardwareOutput
       }
     });
 

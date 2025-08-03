@@ -23,6 +23,8 @@ export class MapHardwareInputSelectorsFormComponent implements OnInit {
   @Input() hardwareInputSelectorId!: number;
 
   mapHardwareInputSelectorsForm: FormGroup;
+  hasCurrentMapping: boolean = false;
+  removingMapping: boolean = false;
 
 
 
@@ -118,7 +120,16 @@ export class MapHardwareInputSelectorsFormComponent implements OnInit {
         this.mapHardwareInputSelectorsForm.controls['hardwareBusExtenderBits'].setValue(
           data.hardwareExtenderBusBitId.toString()
         );
+
+        // Set hasCurrentMapping to true since we have a mapping
+        this.hasCurrentMapping = true;
+      } else {
+        // No current mapping
+        this.hasCurrentMapping = false;
       }
+
+      // Set up form value change listeners
+      this.setupFormValueListeners();
     } catch (error: any) {
       console.error('Error initializing component:', error);
       this._snackBar.open('Error loading data', 'Close', { duration: 3000 });
@@ -151,6 +162,46 @@ export class MapHardwareInputSelectorsFormComponent implements OnInit {
     });
   }
 
+  private checkCurrentMapping(): void {
+    const formValues = this.mapHardwareInputSelectorsForm.value;
+    this.hasCurrentMapping = !!(formValues.hardwareBoards &&
+                               formValues.hardwareBusExtenders &&
+                               formValues.hardwareBusExtenderBits);
+  }
+
+  private setupFormValueListeners(): void {
+    // Listen to form value changes to update hasCurrentMapping
+    this.mapHardwareInputSelectorsForm.valueChanges.subscribe(() => {
+      this.checkCurrentMapping();
+    });
+  }
+
+  async onRemoveMapping(): Promise<void> {
+    if (!this.hardwareInputSelectorId) {
+      this._snackBar.open('Invalid hardware input selector', 'Close', { duration: 3000 });
+      return;
+    }
+
+    try {
+      this.removingMapping = true;
+      await firstValueFrom(this.dataService.unmapHardwareInputSelector(this.hardwareInputSelectorId));
+
+      this._snackBar.open('Mapping removed successfully', 'Ok', { duration: 3000 });
+
+      // Reset form
+      this.mapHardwareInputSelectorsForm.reset();
+      this.hasCurrentMapping = false;
+
+      // Refresh data
+      await this.ngOnInit();
+    } catch (error) {
+      console.error('Error removing mapping:', error);
+      this._snackBar.open('Error removing mapping', 'Close', { duration: 3000 });
+    } finally {
+      this.removingMapping = false;
+    }
+  }
+
   async onSubmit(event?: Event): Promise<void> {
     if (event) {
       event.preventDefault();
@@ -169,6 +220,9 @@ export class MapHardwareInputSelectorsFormComponent implements OnInit {
         this._snackBar.open('Linking Saved Successfully', 'Ok', {
           duration: 3000,
         });
+
+        // Update hasCurrentMapping since we now have a mapping
+        this.hasCurrentMapping = true;
 
         console.log(this.hardwareInputSelectorId, this.mapHardwareInputSelectorsForm.value);
       } catch (error: any) {
@@ -210,7 +264,7 @@ export class MapHardwareInputSelectorsFormComponent implements OnInit {
 
 
 
-    async loadIoExtenderData(hardwareBoardId: number): Promise<void> {
+  async loadIoExtenderData(hardwareBoardId: number): Promise<void> {
     try {
       this.hardwareBoardId = hardwareBoardId;
       this.ioExtenderFieldConfig.options = [];
@@ -238,7 +292,7 @@ export class MapHardwareInputSelectorsFormComponent implements OnInit {
     }
   }
 
-    async loadIoExtenderBitsData(extenderId: number): Promise<void> {
+  async loadIoExtenderBitsData(extenderId: number): Promise<void> {
     try {
       console.log('loadIoExtenderBitsData called with extenderId:', extenderId);
       console.log('Current hardwareBoardId:', this.hardwareBoardId);

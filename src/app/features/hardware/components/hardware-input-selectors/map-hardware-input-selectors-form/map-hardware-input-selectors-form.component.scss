@@ -33,3 +33,21 @@ mat-expansion-panel {
 .margin-top {
   margin-top: 16px;
 }
+
+.margin-left {
+  margin-left: 1rem;
+}
+
+/* Button container alignment */
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 16px;
+}
+
+.button-container button {
+  flex: 0 0 auto;
+  height: 40px;
+  min-width: 120px;
+}

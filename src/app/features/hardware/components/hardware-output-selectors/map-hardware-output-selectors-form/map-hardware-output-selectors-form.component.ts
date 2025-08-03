@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import {
   HardwareBoardDetailsDto,
   MapExtenderBitToHardwareOutputSelectorDto,
@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from 'src/app/core/services/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HardwareBoardDto } from 'src/app/shared/models/models';
+import { firstValueFrom } from 'rxjs';
+
 @Component({
     selector: 'opena3xx-map-hardware-output-selectors-form',
     templateUrl: './map-hardware-output-selectors-form.component.html',
@@ -17,10 +19,13 @@ import { HardwareBoardDto } from 'src/app/shared/models/models';
 })
 export class MapHardwareOutputSelectorsFormComponent implements OnInit {
   public hardwareBoardId: number;
+  private hardwareBoardDetails: HardwareBoardDetailsDto | null = null;
 
   @Input() hardwareOutputSelectorId!: number;
 
   mapHardwareOutputSelectorsForm: FormGroup;
+  hasCurrentMapping: boolean = false;
+  removingMapping: boolean = false;
 
 
 
@@ -77,7 +82,8 @@ export class MapHardwareOutputSelectorsFormComponent implements OnInit {
   constructor(
     formBuilder: FormBuilder,
     private dataService: DataService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.mapHardwareOutputSelectorsForm = formBuilder.group({
       hardwareBoards: [null, { validators: [Validators.required], updateOn: 'change' }],
@@ -85,50 +91,69 @@ export class MapHardwareOutputSelectorsFormComponent implements OnInit {
       hardwareBusExtenderBits: [null, { validators: [Validators.required], updateOn: 'change' }],
     });
   }
-  ngOnInit(): void {
-    this.dataService
-      .getHardwareBoardAssociationForHardwareOutputSelector(this.hardwareOutputSelectorId)
-      .toPromise()
-      .then((data: MapExtenderBitToHardwareOutputSelectorDto) => {
-        this.fetchHardwareBoards().finally(() => {
-          if (
-            data.hardwareBoardId != 0 &&
-            data.hardwareExtenderBusBitId != 0 &&
-            data.hardwareExtenderBusId != 0
-          ) {
-            this.loadIoExtenderData(data.hardwareBoardId).finally(() => {
-              this.loadIoExtenderBitsData(data.hardwareExtenderBusId).finally(() => {
-                console.log(this.mapHardwareOutputSelectorsForm.controls['hardwareBoards']);
-                this.mapHardwareOutputSelectorsForm.controls['hardwareBoards'].setValue(
-                  data.hardwareBoardId.toString()
-                );
-                this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenders'].setValue(
-                  data.hardwareExtenderBusId.toString()
-                );
-                this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenderBits'].setValue(
-                  data.hardwareExtenderBusBitId.toString()
-                );
-              });
-            });
-          }
-        });
-      });
+  async ngOnInit(): Promise<void> {
+    if (!this.hardwareOutputSelectorId) {
+      console.error('hardwareOutputSelectorId is not set!');
+      return;
+    }
+
+    try {
+      const data = await firstValueFrom(
+        this.dataService.getHardwareBoardAssociationForHardwareOutputSelector(this.hardwareOutputSelectorId)
+      ) as MapExtenderBitToHardwareOutputSelectorDto;
+
+      await this.fetchHardwareBoards();
+
+      if (
+        data.hardwareBoardId != 0 &&
+        data.hardwareExtenderBusBitId != 0 &&
+        data.hardwareExtenderBusId != 0
+      ) {
+        await this.loadIoExtenderData(data.hardwareBoardId);
+        await this.loadIoExtenderBitsData(data.hardwareExtenderBusId);
+
+        this.mapHardwareOutputSelectorsForm.controls['hardwareBoards'].setValue(
+          data.hardwareBoardId.toString()
+        );
+        this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenders'].setValue(
+          data.hardwareExtenderBusId.toString()
+        );
+        this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenderBits'].setValue(
+          data.hardwareExtenderBusBitId.toString()
+        );
+
+        // Set hasCurrentMapping to true since we have a mapping
+        this.hasCurrentMapping = true;
+      } else {
+        // No current mapping
+        this.hasCurrentMapping = false;
+      }
+
+      // Set up form value change listeners
+      this.setupFormValueListeners();
+    } catch (error: any) {
+      console.error('Error initializing component:', error);
+      this._snackBar.open('Error loading data', 'Close', { duration: 3000 });
+    }
   }
 
-  fetchHardwareBoards() {
-    return this.dataService
-      .getAllHardwareBoards()
-      .toPromise()
-      .then((hardwareBoardList: HardwareBoardDto[]) => {
-        this.hardwareBoardsFieldConfig.options = [];
-        _.forEach(hardwareBoardList, (item) => {
-          const optionList: OptionList = {
-            key: item.id.toString(),
-            value: item.name,
-          };
-          this.hardwareBoardsFieldConfig.options.push(optionList);
-        });
+  async fetchHardwareBoards() {
+    try {
+      const hardwareBoardList = await firstValueFrom(this.dataService.getAllHardwareBoards()) as HardwareBoardDto[];
+
+      this.hardwareBoardsFieldConfig.options = [];
+      _.forEach(hardwareBoardList, (item) => {
+        const optionList: OptionList = {
+          key: item.id.toString(),
+          value: item.name,
+        };
+        this.hardwareBoardsFieldConfig.options.push(optionList);
       });
+      this.cdr.detectChanges();
+    } catch (error: any) {
+      console.error('Error fetching hardware boards:', error);
+      this._snackBar.open('Error loading hardware boards', 'Close', { duration: 3000 });
+    }
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -138,7 +163,47 @@ export class MapHardwareOutputSelectorsFormComponent implements OnInit {
     });
   }
 
-  onSubmit(event?: Event) {
+  private checkCurrentMapping(): void {
+    const formValues = this.mapHardwareOutputSelectorsForm.value;
+    this.hasCurrentMapping = !!(formValues.hardwareBoards &&
+                               formValues.hardwareBusExtenders &&
+                               formValues.hardwareBusExtenderBits);
+  }
+
+  private setupFormValueListeners(): void {
+    // Listen to form value changes to update hasCurrentMapping
+    this.mapHardwareOutputSelectorsForm.valueChanges.subscribe(() => {
+      this.checkCurrentMapping();
+    });
+  }
+
+  async onRemoveMapping(): Promise<void> {
+    if (!this.hardwareOutputSelectorId) {
+      this._snackBar.open('Invalid hardware output selector', 'Close', { duration: 3000 });
+      return;
+    }
+
+    try {
+      this.removingMapping = true;
+      await firstValueFrom(this.dataService.unmapHardwareOutputSelector(this.hardwareOutputSelectorId));
+
+      this._snackBar.open('Mapping removed successfully', 'Ok', { duration: 3000 });
+
+      // Reset form
+      this.mapHardwareOutputSelectorsForm.reset();
+      this.hasCurrentMapping = false;
+
+      // Refresh data
+      await this.ngOnInit();
+    } catch (error) {
+      console.error('Error removing mapping:', error);
+      this._snackBar.open('Error removing mapping', 'Close', { duration: 3000 });
+    } finally {
+      this.removingMapping = false;
+    }
+  }
+
+  async onSubmit(event?: Event): Promise<void> {
     if (event) {
       event.preventDefault();
     }
@@ -150,97 +215,170 @@ export class MapHardwareOutputSelectorsFormComponent implements OnInit {
         hardwareOutputSelectorId: this.hardwareOutputSelectorId,
       };
 
-      this.dataService
-        .mapExtenderBitToHardwareOutputSelector(linkExtenderBitToHardwareOutputSelector)
-        .toPromise()
-        .then(() => {
-          this._snackBar.open('Linking Saved Successfully', 'Ok', {
-            duration: 3000,
-          });
-        });
+      await firstValueFrom(this.dataService.mapExtenderBitToHardwareOutputSelector(linkExtenderBitToHardwareOutputSelector));
+
+      this._snackBar.open('Linking Saved Successfully', 'Ok', {
+        duration: 3000,
+      });
+
+      // Update hasCurrentMapping since we now have a mapping
+      this.hasCurrentMapping = true;
+
       console.log(this.hardwareOutputSelectorId, this.mapHardwareOutputSelectorsForm.value);
     } else {
       this.validateAllFormFields(this.mapHardwareOutputSelectorsForm);
     }
   }
 
-  onHardwareBoardSelectChange(selectChangeEvent: any) {
-    this.loadIoExtenderData(selectChangeEvent.value);
+  async onHardwareBoardSelectChange(selectChangeEvent: any): Promise<void> {
+    console.log('onHardwareBoardSelectChange called with value:', selectChangeEvent.value);
+    try {
+      await this.loadIoExtenderData(selectChangeEvent.value);
+    } catch (error: any) {
+      console.error('Error loading IO extender data:', error);
+      this._snackBar.open('Error loading IO extender data', 'Close', { duration: 3000 });
+    }
   }
 
-  onIoExtenderSelectChange(selectChangeEvent: any) {
-    this.loadIoExtenderBitsData(selectChangeEvent.value);
+  async onIoExtenderSelectChange(selectChangeEvent: any): Promise<void> {
+    try {
+      await this.loadIoExtenderBitsData(selectChangeEvent.value);
+    } catch (error: any) {
+      console.error('Error loading IO extender bits data:', error);
+      this._snackBar.open('Error loading IO extender bits data', 'Close', { duration: 3000 });
+    }
   }
 
-  loadIoExtenderData(hardwareBoardId: number) {
-    this.hardwareBoardId = hardwareBoardId;
-    this.ioExtenderFieldConfig.options = [];
-    return this.dataService
-      .getHardwareBoardDetails(hardwareBoardId)
-      .toPromise()
-      .then((hardwareBoardDetailsDto: HardwareBoardDetailsDto) => {
-        console.log(hardwareBoardDetailsDto);
-        _.each(hardwareBoardDetailsDto.ioExtenderBuses, (ioExtender) => {
-          const optionList: OptionList = {
-            key: ioExtender.id.toString(),
-            value: ioExtender.name.replace('Bus', 'Bus '),
-          };
-          this.ioExtenderFieldConfig.options.push(optionList);
-        });
-        this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenders'].reset();
+  async onIoExtenderBitSelectChange(): Promise<void> {
+    try {
+      // Add any additional logic needed when the bit is selected
+      // For example, you might want to validate the selection or update other form fields
+    } catch (error: any) {
+      console.error('Error handling IO extender bit selection:', error);
+      this._snackBar.open('Error handling bit selection', 'Close', { duration: 3000 });
+    }
+  }
+
+
+  async loadIoExtenderData(hardwareBoardId: number): Promise<void> {
+    try {
+      this.hardwareBoardId = hardwareBoardId;
+      this.ioExtenderFieldConfig.options = [];
+
+      this.hardwareBoardDetails = await firstValueFrom(
+        this.dataService.getHardwareBoardDetails(hardwareBoardId)
+      ) as HardwareBoardDetailsDto;
+
+      console.log('Hardware Board Details:', this.hardwareBoardDetails);
+      console.log('IO Extender Buses:', this.hardwareBoardDetails.ioExtenderBuses);
+
+      _.each(this.hardwareBoardDetails.ioExtenderBuses, (ioExtender) => {
+        const optionList: OptionList = {
+          key: ioExtender.id.toString(),
+          value: ioExtender.name.replace('Bus', 'Bus '),
+        };
+        this.ioExtenderFieldConfig.options.push(optionList);
       });
+
+      console.log('IO Extender Options:', this.ioExtenderFieldConfig.options);
+      this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenders'].reset();
+    } catch (error: any) {
+      console.error('Error loading IO extender data:', error);
+      this._snackBar.open('Error loading IO extender data', 'Close', { duration: 3000 });
+    }
   }
 
   loadIoExtenderBitsData(extenderId: number) {
-    console.log('loadIoExtenderBitsData', extenderId);
-    this.ioExtenderBitFieldConfig.options = [];
-    return this.dataService
-      .getHardwareBoardDetails(this.hardwareBoardId)
-      .toPromise()
-      .then((hardwareBoardDetailsDto: HardwareBoardDetailsDto) => {
-        _.each(hardwareBoardDetailsDto.ioExtenderBuses, (ioExtender) => {
-          if (ioExtender.id === extenderId) {
-            _.each(ioExtender.ioExtenderBusBits, (ioExtenderBit) => {
-              let optionListValue: string = `${ioExtenderBit.name} `;
+    try {
+      console.log('loadIoExtenderBitsData called with extenderId:', extenderId);
+      console.log('Current hardwareBoardId:', this.hardwareBoardId);
+      console.log('Stored hardware board details:', this.hardwareBoardDetails);
 
-              if (
-                            ioExtenderBit.hardwareInputSelectorFullName === null &&
-            ioExtenderBit.hardwareOutputSelectorFullName === null
-              ) {
-                optionListValue += ' - Not Mapped';
-              } else if (
-                                  ioExtenderBit.hardwareInputSelectorFullName !== null &&
-                ioExtenderBit.hardwareOutputSelectorFullName === null
-              ) {
-                optionListValue +=
-                  ' - Currently Mapped to ' +
-                  ioExtenderBit.hardwareInputSelectorFullName +
-                  ' (Input from Board)';
-              } else if (
-                ioExtenderBit.hardwareInputSelectorFullName === null &&
-                                  ioExtenderBit.hardwareOutputSelectorFullName !== null
-              ) {
-                optionListValue +=
-                  ' - Currently Mapped to ' +
-                  ioExtenderBit.hardwareOutputSelectorFullName +
-                  ' (Output to Board)';
-              }
-              optionListValue = optionListValue.replace('Bit', 'Bit ');
+      this.ioExtenderBitFieldConfig.options = [];
 
-              const optionList: OptionList = {
-                key: ioExtenderBit.id.toString(),
-                value: optionListValue,
-              };
-              this.ioExtenderBitFieldConfig.options.push(optionList);
-            });
-            this.ioExtenderBitFieldConfig.options = _.orderBy(
-              this.ioExtenderBitFieldConfig.options,
-              ['value'],
-              ['asc']
-            );
-          }
-        });
-        this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenderBits'].reset();
+      if (!this.hardwareBoardDetails) {
+        console.error('No hardware board details available');
+        this._snackBar.open('No hardware board data available', 'Close', { duration: 3000 });
+        return;
+      }
+
+      let foundExtender = false;
+      _.each(this.hardwareBoardDetails.ioExtenderBuses, (ioExtender) => {
+        console.log('Checking extender:', ioExtender.id, 'against:', extenderId);
+        if (ioExtender.id == extenderId) {
+          foundExtender = true;
+          console.log('Found matching extender:', ioExtender);
+          console.log('IO Extender Bus Bits:', ioExtender.ioExtenderBusBits);
+
+          console.log('Processing IO Extender Bus Bits:', ioExtender.ioExtenderBusBits);
+          _.each(ioExtender.ioExtenderBusBits, (ioExtenderBit) => {
+            console.log('Processing bit:', ioExtenderBit);
+            let optionListValue: string = `${ioExtenderBit.name} `;
+
+            if (
+              ioExtenderBit.hardwareInputSelectorFullName === null &&
+              ioExtenderBit.hardwareOutputSelectorFullName === null
+            ) {
+              console.log('Not Mapped');
+              optionListValue += ' - Not Mapped';
+            } else if (
+              ioExtenderBit.hardwareInputSelectorFullName !== null &&
+              ioExtenderBit.hardwareOutputSelectorFullName === null
+            ) {
+              console.log('Mapped already to Input');
+              optionListValue +=
+                ' - Currently Mapped to ' +
+                ioExtenderBit.hardwareInputSelectorFullName +
+                ' (Input from Board)';
+            } else if (
+              ioExtenderBit.hardwareInputSelectorFullName === null &&
+              ioExtenderBit.hardwareOutputSelectorFullName !== null
+            ) {
+              console.log('Mapped already to Output');
+              optionListValue +=
+                ' - Currently Mapped to ' +
+                ioExtenderBit.hardwareOutputSelectorFullName +
+                ' (Output to Board)';
+            }
+            optionListValue = optionListValue.replace('Bit', 'Bit ');
+
+            const optionList: OptionList = {
+              key: ioExtenderBit.id.toString(),
+              value: optionListValue,
+            };
+            console.log('Adding option:', optionList);
+            this.ioExtenderBitFieldConfig.options.push(optionList);
+          });
+
+          this.ioExtenderBitFieldConfig.options = _.orderBy(
+            this.ioExtenderBitFieldConfig.options,
+            ['value'],
+            ['asc']
+          );
+        }
       });
+
+      if (!foundExtender) {
+        console.warn('No matching extender found for ID:', extenderId);
+        console.log('Available extenders:', this.hardwareBoardDetails.ioExtenderBuses.map(e => ({ id: e.id, name: e.name })));
+      }
+
+            console.log('Final IO Extender Bit Options:', this.ioExtenderBitFieldConfig.options);
+      console.log('Field config options length:', this.ioExtenderBitFieldConfig.options.length);
+
+      // Test if options are properly set
+      setTimeout(() => {
+        console.log('Options after timeout:', this.ioExtenderBitFieldConfig.options);
+        console.log('Field config object:', this.ioExtenderBitFieldConfig);
+      }, 100);
+
+      this.mapHardwareOutputSelectorsForm.controls['hardwareBusExtenderBits'].reset();
+
+      // Force change detection to update the dropdown
+      this.cdr.detectChanges();
+    } catch (error: any) {
+      console.error('Error loading IO extender bits data:', error);
+      this._snackBar.open('Error loading IO extender bits data', 'Close', { duration: 3000 });
+    }
   }
 }

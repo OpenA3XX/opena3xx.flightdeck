@@ -208,6 +208,10 @@ export class DataService {
     );
   }
 
+  unmapHardwareInputSelector(hardwareInputSelectorId: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-boards/unmap/hardware-input-selector/${hardwareInputSelectorId}`);
+  }
+
   getHardwareBoardAssociationForHardwareInputSelector(hardwareInputSelectorId: number) {
     return this.http.get(
       `${this.BASE_URL}/hardware-boards/hardware-input-selector/${hardwareInputSelectorId}`
@@ -234,6 +238,10 @@ export class DataService {
       `${this.BASE_URL}/hardware-boards/link/hardware-output-selector`,
       linkExtenderBitToHardwareOutputSelectorDto
     );
+  }
+
+  unmapHardwareOutputSelector(hardwareOutputSelectorId: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-boards/unmap/hardware-output-selector/${hardwareOutputSelectorId}`);
   }
 
   // Hardware Input API Methods

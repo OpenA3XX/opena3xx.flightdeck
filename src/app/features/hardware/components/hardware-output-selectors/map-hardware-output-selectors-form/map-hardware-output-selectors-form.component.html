@@ -2,27 +2,39 @@
   <opena3xx-forms-select
     [field]="hardwareBoardsFieldConfig"
     [group]="mapHardwareOutputSelectorsForm"
-    (onSelectChange)="onHardwareBoardSelectChange($event)"
+    (selectChange)="onHardwareBoardSelectChange($event)"
   >
   </opena3xx-forms-select>
 
   <opena3xx-forms-select
     [field]="ioExtenderFieldConfig"
     [group]="mapHardwareOutputSelectorsForm"
-    (onSelectChange)="onIoExtenderSelectChange($event)"
+    (selectChange)="onIoExtenderSelectChange($event)"
   >
   </opena3xx-forms-select>
 
   <opena3xx-forms-select
     [field]="ioExtenderBitFieldConfig"
     [group]="mapHardwareOutputSelectorsForm"
+    (selectChange)="onIoExtenderBitSelectChange()"
   >
   </opena3xx-forms-select>
 
-  <div class="full-width margin-top">
-    <button type="submit" mat-flat-button color="primary">
+  <div class="button-container">
+    <button type="submit" mat-flat-button color="primary" [disabled]="removingMapping">
       <mat-icon>check</mat-icon>
       Save
+    </button>
+
+    <!-- Remove Mapping Button -->
+    <button
+      type="button"
+      mat-flat-button
+      color="warn"
+      [disabled]="!hasCurrentMapping || removingMapping"
+      (click)="onRemoveMapping()">
+      <mat-icon>delete</mat-icon>
+      Remove Mapping
     </button>
   </div>
 </form>

@@ -7,6 +7,7 @@ A reusable header component for consistent page layouts across the application.
 - **Configurable Title & Subtitle**: Set the main title and optional subtitle
 - **Dynamic Icon**: Optional Material Design icon
 - **Flexible Action Buttons**: Multiple action buttons with different colors and states
+- **Sticky Behavior**: Sticks to the top when scrolling (enabled by default)
 - **Responsive Design**: Adapts to different screen sizes
 - **Material Design**: Consistent with Angular Material styling
 - **Type Safety**: Strongly typed action configuration
@@ -20,6 +21,17 @@ A reusable header component for consistent page layouts across the application.
   title="Page Title"
   subtitle="Optional subtitle text"
   icon="dashboard">
+</opena3xx-page-header>
+```
+
+### Disable Sticky Behavior
+
+```html
+<opena3xx-page-header
+  title="Page Title"
+  subtitle="Optional subtitle text"
+  icon="dashboard"
+  [sticky]="false">
 </opena3xx-page-header>
 ```
 
@@ -84,6 +96,7 @@ export class MyComponent {
 | `subtitle` | `string` | No | Optional subtitle text |
 | `icon` | `string` | No | Material Design icon name |
 | `actions` | `PageHeaderAction[]` | No | Array of action buttons |
+| `sticky` | `boolean` | No | Enable sticky behavior (default: true) |
 
 ## PageHeaderAction Interface
 

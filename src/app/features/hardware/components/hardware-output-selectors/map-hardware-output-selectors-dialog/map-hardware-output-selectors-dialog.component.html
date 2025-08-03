@@ -3,15 +3,19 @@
   (close)="onClose()">
 
   <div class="content-area">
+    <div *ngIf="!hardwareOutputSelector.hardwareOutputSelectors || hardwareOutputSelector.hardwareOutputSelectors.length === 0" class="no-data">
+      <p>No hardware output selectors available for mapping.</p>
+    </div>
+
     <div class="expansion-panels-container">
       <mat-expansion-panel
         *ngFor="let a of hardwareOutputSelector.hardwareOutputSelectors; let index = index"
       >
         <mat-expansion-panel-header>
-          <mat-panel-title
-            >Hardware Output Selector mapping -
-            {{ hardwareOutputSelector.hardwareOutputSelectors[index].name }}</mat-panel-title
-          >
+          <mat-panel-title>
+            Hardware Output Selector mapping -
+            {{ hardwareOutputSelector.hardwareOutputSelectors[index].name }}
+          </mat-panel-title>
         </mat-expansion-panel-header>
         <opena3xx-map-hardware-output-selectors-form
           [hardwareOutputSelectorId]="hardwareOutputSelector.hardwareOutputSelectors[index].id"
