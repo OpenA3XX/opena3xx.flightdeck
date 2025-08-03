@@ -29,6 +29,7 @@ import { ViewHardwareInputSelectorsDialogComponent } from './components/hardware
 import { ViewHardwareOutputSelectorsDialogComponent } from './components/hardware-output-selectors/view-hardware-output-selectors-dialog/view-hardware-output-selectors-dialog.component';
 import { DeleteHardwareInputDialogComponent } from './components/hardware-input-selectors/delete-hardware-input-dialog/delete-hardware-input-dialog.component';
 import { AddHardwarePanelDialogComponent } from './components/hardware-panels/add-hardware-panel-dialog/add-hardware-panel-dialog.component';
+import { DeleteHardwarePanelDialogComponent } from './components/hardware-panels/delete-hardware-panel-dialog/delete-hardware-panel-dialog.component';
 import { AddHardwareInputTypeDialogComponent } from './components/hardware-input-types/add-hardware-input-type-dialog/add-hardware-input-type-dialog.component';
 import { AddHardwareOutputTypeDialogComponent } from './components/hardware-output-types/add-hardware-output-type-dialog/add-hardware-output-type-dialog.component';
 import { RegisterHardwareBoardDialogComponent } from './components/hardware-boards/register-hardware-board-dialog/register-hardware-board-dialog.component';
@@ -78,6 +79,7 @@ import { DataService } from 'src/app/core/services/data.service';
     ManageHardwareInputsComponent,
     AddHardwareInputSelectorDialogComponent,
     DeleteHardwareInputSelectorDialogComponent,
+    DeleteHardwarePanelDialogComponent,
 
   ],
   imports: [
@@ -119,6 +121,7 @@ import { DataService } from 'src/app/core/services/data.service';
     ManageHardwareInputsComponent,
     AddHardwareInputSelectorDialogComponent,
     DeleteHardwareInputSelectorDialogComponent,
+    DeleteHardwarePanelDialogComponent,
 
   ],
   providers: [

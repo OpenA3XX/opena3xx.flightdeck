@@ -4,16 +4,16 @@
 
   th.mat-header-cell:nth-child(1),
   td.mat-cell:nth-child(1) {
-    width: 5% !important;
-    min-width: 5% !important;
-    max-width: 5% !important;
+    width: 3% !important;
+    min-width: 3% !important;
+    max-width: 3% !important;
   }
 
   th.mat-header-cell:nth-child(2),
   td.mat-cell:nth-child(2) {
-    width: 10% !important;
-    min-width: 10% !important;
-    max-width: 10% !important;
+    width: 15% !important;
+    min-width: 15% !important;
+    max-width: 15% !important;
   }
 
   th.mat-header-cell:nth-child(4),
@@ -218,15 +218,15 @@
 
       // Column width specifications with !important to override Material styles
       &:nth-child(1) { // ID column
-        width: 5% !important;
-        min-width: 5% !important;
-        max-width: 5% !important;
+        width: 3% !important;
+        min-width: 3% !important;
+        max-width: 3% !important;
       }
 
       &:nth-child(2) { // Name column
-        width: 10% !important;
-        min-width: 10% !important;
-        max-width: 10% !important;
+        width: 15% !important;
+        min-width: 15% !important;
+        max-width: 15% !important;
       }
 
       &:nth-child(3) { // Type column
@@ -255,15 +255,15 @@
 
       // Column width specifications with !important to override Material styles
       &:nth-child(1) { // ID column
-        width: 5% !important;
-        min-width: 5% !important;
-        max-width: 5% !important;
+        width: 3% !important;
+        min-width: 3% !important;
+        max-width: 3% !important;
       }
 
       &:nth-child(2) { // Name column
-        width: 10% !important;
-        min-width: 10% !important;
-        max-width: 10% !important;
+        width: 15% !important;
+        min-width: 15% !important;
+        max-width: 15% !important;
       }
 
       &:nth-child(3) { // Type column
@@ -332,19 +332,19 @@
   // Additional specific column width overrides
   .data-table th.mat-header-cell:nth-child(1),
   .data-table td.mat-cell:nth-child(1) {
-    width: 5% !important;
-    min-width: 5% !important;
-    max-width: 5% !important;
-    flex: 0 0 5% !important;
+    width: 3% !important;
+    min-width: 3% !important;
+    max-width: 3% !important;
+    flex: 0 0 3% !important;
   }
 
   // Additional specific column width overrides
   .data-table th.mat-header-cell:nth-child(2),
   .data-table td.mat-cell:nth-child(2) {
-    width: 10% !important;
-    min-width: 10% !important;
-    max-width: 10% !important;
-    flex: 0 0 10% !important;
+    width: 15% !important;
+    min-width: 15% !important;
+    max-width: 15% !important;
+    flex: 0 0 15% !important;
   }
 
   .data-table th.mat-header-cell:nth-child(4),
@@ -357,10 +357,10 @@
 
   // Specific column width classes
   .name-column {
-    width: 5% !important;
-    min-width: 5% !important;
-    max-width: 5% !important;
-    flex: 0 0 5% !important;
+    width: 15% !important;
+    min-width: 15% !important;
+    max-width: 15% !important;
+    flex: 0 0 15% !important;
   }
 }
 

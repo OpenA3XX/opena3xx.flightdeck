@@ -1,0 +1,17 @@
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
+  <div class="confirmation-content">
+    <p>
+      You are about to delete the hardware panel <strong>"{{ hardwarePanel.name }}"</strong>.
+    </p>
+    <p>This action will permanently delete the hardware panel and all its associated data.</p>
+    <p>This action cannot be undone.</p>
+  </div>
+
+  <div dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="warn" (click)="onConfirm()">
+      <mat-icon>delete_forever</mat-icon>
+      Delete Panel
+    </button>
+  </div>
+</opena3xx-dialog-wrapper>

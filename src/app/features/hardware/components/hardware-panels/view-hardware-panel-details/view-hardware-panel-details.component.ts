@@ -225,7 +225,17 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
   }
 
   deleteHardwareInput(hardwareInput: HardwareInputDto) {
-    const dialogRef = this.dialog.open(DeleteHardwareInputDialogComponent);
+    const dialogRef = this.dialog.open(DeleteHardwareInputDialogComponent, {
+      width: '500px',
+      disableClose: false
+    });
     dialogRef.componentInstance.hardwareInput = hardwareInput;
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
+        // Refresh the data to reflect the deletion
+        this.fetchData();
+      }
+    });
   }
 }

@@ -20,3 +20,16 @@
     padding: var(--spacing-md, 16px);
   }
 }
+
+// Column width overrides for the data table
+::ng-deep .mat-column-aircraftModel {
+  width: 15% !important;
+  max-width: 80px !important;
+  min-width: 80px !important;
+}
+
+::ng-deep .mat-column-actions {
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+}

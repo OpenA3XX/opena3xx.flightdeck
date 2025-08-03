@@ -247,6 +247,10 @@ export class DataService {
     return this.http.delete(`${this.BASE_URL}/hardware-inputs/${id}`);
   }
 
+  deleteHardwarePanel(id: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-panel/${id}`);
+  }
+
   // Hardware Input Selector API Methods
   addHardwareInputSelector(hardwareInputId: number, selector: AddHardwareInputSelectorDto) {
     return this.http.post<HardwareInputSelectorDto>(`${this.BASE_URL}/hardware-input-selectors`, {

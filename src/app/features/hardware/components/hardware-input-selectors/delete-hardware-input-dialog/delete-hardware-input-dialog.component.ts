@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
 import { HardwareInputDto } from 'src/app/shared/models/models';
+import { DataService } from 'src/app/core/services/data.service';
 import { DialogWrapperConfig } from 'src/app/shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 
 @Component({
@@ -16,7 +19,11 @@ export class DeleteHardwareInputDialogComponent implements OnInit {
 
   @Input() hardwareInput: HardwareInputDto;
 
-  constructor(private dialogRef: MatDialogRef<DeleteHardwareInputDialogComponent>) {
+  constructor(
+    private dialogRef: MatDialogRef<DeleteHardwareInputDialogComponent>,
+    private dataService: DataService,
+    private snackBar: MatSnackBar
+  ) {
     this.initializeWrapperConfig();
   }
 
@@ -51,7 +58,25 @@ export class DeleteHardwareInputDialogComponent implements OnInit {
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);
+    if (this.hardwareInput && this.hardwareInput.id) {
+      firstValueFrom(this.dataService.deleteHardwareInput(this.hardwareInput.id))
+        .then(() => {
+          this.snackBar.open('Hardware Input Deleted Successfully', 'Ok', {
+            duration: 3000,
+          });
+          this.dialogRef.close({ action: 'deleted', data: this.hardwareInput });
+        })
+        .catch((error) => {
+          console.error('Error deleting hardware input:', error);
+          this.snackBar.open('Error occurred while deleting Hardware Input', 'Ok', {
+            duration: 3000,
+          });
+        });
+    } else {
+      this.snackBar.open('Invalid hardware input data', 'Ok', {
+        duration: 3000,
+      });
+    }
   }
 
   onCancel(): void {

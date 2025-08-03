@@ -10,6 +10,7 @@ import { HardwarePanelOverviewDto } from 'src/app/shared/models/models';
 import { DataTableConfig, TableColumnConfig, DataTableEvent } from 'src/app/shared/models/data-table.interface';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { AddHardwarePanelDialogComponent } from '../add-hardware-panel-dialog/add-hardware-panel-dialog.component';
+import { DeleteHardwarePanelDialogComponent } from '../delete-hardware-panel-dialog/delete-hardware-panel-dialog.component';
 
 @Component({
     selector: 'opena3xx-manage-hardware-panels',
@@ -56,8 +57,8 @@ export class ManageHardwarePanelsComponent implements OnInit {
         key: 'aircraftModel',
         label: 'Aircraft Model',
         sortable: false,
-        width: '25%',
-        maxWidth: '100px',
+        width: '15%',
+        maxWidth: '80px',
         type: 'text'
       },
       {
@@ -87,7 +88,7 @@ export class ManageHardwarePanelsComponent implements OnInit {
       {
         key: 'actions',
         label: 'Actions',
-        width: '200px',
+        width: '300px',
         type: 'actions',
         actions: [
           {
@@ -96,6 +97,13 @@ export class ManageHardwarePanelsComponent implements OnInit {
             color: 'primary',
             tooltip: 'Manage',
             action: (item) => this.onViewDetailsClick(item.id)
+          },
+          {
+            label: 'Delete',
+            icon: 'delete',
+            color: 'warn',
+            tooltip: 'Delete',
+            action: (item) => this.onDeleteHardwarePanel(item)
           }
         ]
       }
@@ -156,6 +164,21 @@ export class ManageHardwarePanelsComponent implements OnInit {
 
   onViewDetailsClick(id: number) {
     this.router.navigateByUrl(`/view/hardware-panel-details?id=${id}`);
+  }
+
+  onDeleteHardwarePanel(hardwarePanel: HardwarePanelOverviewDto) {
+    const dialogRef = this.dialog.open(DeleteHardwarePanelDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { hardwarePanel }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
+        // Refresh the data to reflect the deletion
+        this.loadData();
+      }
+    });
   }
 
   addHardwarePanel() {

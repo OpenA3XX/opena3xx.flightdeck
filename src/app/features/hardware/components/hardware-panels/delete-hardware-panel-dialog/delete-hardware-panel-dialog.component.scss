@@ -1,0 +1,14 @@
+.confirmation-content {
+  padding: 16px 0;
+
+  p {
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+
+    &:last-child {
+      margin-bottom: 0;
+      font-style: italic;
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
