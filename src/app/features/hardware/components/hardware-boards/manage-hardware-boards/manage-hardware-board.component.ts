@@ -7,6 +7,8 @@ import { DataService } from 'src/app/core/services/data.service';
 import { DataTableConfig, TableColumnConfig, DataTableEvent } from 'src/app/shared/models/data-table.interface';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { RegisterHardwareBoardDialogComponent } from '../register-hardware-board-dialog/register-hardware-board-dialog.component';
+import { EditHardwareBoardDialogComponent } from '../edit-hardware-board-dialog/edit-hardware-board-dialog.component';
+import { DeleteHardwareBoardDialogComponent } from '../delete-hardware-board-dialog/delete-hardware-board-dialog.component';
 
 @Component({
     templateUrl: './manage-hardware-board.component.html',
@@ -37,7 +39,7 @@ export class ManageHardwareBoardsComponent implements OnInit {
         key: 'id',
         label: 'ID',
         sortable: true,
-        width: '80px',
+        width: '60px',
         type: 'number'
       },
       {
@@ -51,20 +53,20 @@ export class ManageHardwareBoardsComponent implements OnInit {
         key: 'hardwareBusExtendersCount',
         label: 'Total Hardware Bus Extenders',
         sortable: true,
-        width: '20%',
+        width: '15%',
         type: 'number'
       },
       {
         key: 'totalInputOutputs',
         label: 'Total I/O(s)',
         sortable: true,
-        width: '15%',
+        width: '10%',
         type: 'number'
       },
       {
         key: 'actions',
         label: 'Actions',
-        width: '200px',
+        width: '400px',
         type: 'actions',
         actions: [
           {
@@ -73,6 +75,20 @@ export class ManageHardwareBoardsComponent implements OnInit {
             color: 'primary',
             tooltip: 'View Details',
             action: (item) => this.onViewDetailsClick(item.id)
+          },
+          {
+            label: 'Edit',
+            icon: 'edit',
+            color: 'primary',
+            tooltip: 'Edit',
+            action: (item) => this.onEditHardwareBoard(item)
+          },
+          {
+            label: 'Delete',
+            icon: 'delete',
+            color: 'warn',
+            tooltip: 'Delete',
+            action: (item) => this.onDeleteHardwareBoard(item)
           }
         ]
       }
@@ -140,6 +156,34 @@ export class ManageHardwareBoardsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.action === 'added') {
         // Refresh the data after successful addition
+        this.loadData();
+      }
+    });
+  }
+
+  onEditHardwareBoard(hardwareBoard: HardwareBoardDto) {
+    const dialogRef = this.dialog.open(EditHardwareBoardDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { hardwareBoard }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'updated') {
+        this.loadData();
+      }
+    });
+  }
+
+  onDeleteHardwareBoard(hardwareBoard: HardwareBoardDto) {
+    const dialogRef = this.dialog.open(DeleteHardwareBoardDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { hardwareBoard }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
         this.loadData();
       }
     });

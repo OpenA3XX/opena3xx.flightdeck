@@ -15,6 +15,8 @@ import { DialogWrapperConfig } from 'src/app/shared/components/ui/dialog-wrapper
 export class DeleteHardwarePanelDialogComponent {
   wrapperConfig: DialogWrapperConfig;
   hardwarePanel: HardwarePanelOverviewDto;
+  disabled: boolean = true;
+  hardwarePanelName: string = '';
 
   constructor(
     private dialogRef: MatDialogRef<DeleteHardwarePanelDialogComponent>,
@@ -23,13 +25,14 @@ export class DeleteHardwarePanelDialogComponent {
     private dataService: DataService,
   ) {
     this.hardwarePanel = data.hardwarePanel;
+    this.hardwarePanelName = this.hardwarePanel.name;
     this.initializeWrapperConfig();
   }
 
   private initializeWrapperConfig(): void {
     this.wrapperConfig = {
       title: 'Delete Hardware Panel',
-      subtitle: `Are you sure you want to delete "${this.hardwarePanel.name}"?`,
+      subtitle: `Are you sure you want to delete "${this.hardwarePanelName}"?`,
       icon: 'delete_forever',
       size: 'small',
       showCloseButton: true,
@@ -39,6 +42,10 @@ export class DeleteHardwarePanelDialogComponent {
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  onInputChange(target: HTMLInputElement) {
+    this.disabled = target.value !== this.hardwarePanelName;
   }
 
   onConfirm(): void {

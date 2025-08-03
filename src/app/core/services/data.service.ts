@@ -251,6 +251,14 @@ export class DataService {
     return this.http.delete(`${this.BASE_URL}/hardware-panel/${id}`);
   }
 
+  updateHardwareBoard(id: number, hardwareBoardDto: HardwareBoardDto) {
+    return this.http.patch<HardwareBoardDto>(`${this.BASE_URL}/hardware-boards/${id}`, hardwareBoardDto);
+  }
+
+  deleteHardwareBoard(id: number) {
+    return this.http.delete(`${this.BASE_URL}/hardware-boards/${id}`);
+  }
+
   // Hardware Input Selector API Methods
   addHardwareInputSelector(hardwareInputId: number, selector: AddHardwareInputSelectorDto) {
     return this.http.post<HardwareInputSelectorDto>(`${this.BASE_URL}/hardware-input-selectors`, {

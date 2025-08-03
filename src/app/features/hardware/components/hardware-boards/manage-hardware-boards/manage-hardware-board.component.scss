@@ -100,6 +100,23 @@
   .hardware-boards-content {
     padding: var(--spacing-md, 16px);
   }
+}
 
+// Column width overrides for the data table
+::ng-deep .mat-column-id {
+  width: 60px !important;
+  max-width: 60px !important;
+  min-width: 60px !important;
+}
 
+::ng-deep .mat-column-totalInputOutputs {
+  width: 10% !important;
+  max-width: 80px !important;
+  min-width: 80px !important;
+}
+
+::ng-deep .mat-column-actions {
+  width: 400px !important;
+  min-width: 400px !important;
+  max-width: 400px !important;
 }

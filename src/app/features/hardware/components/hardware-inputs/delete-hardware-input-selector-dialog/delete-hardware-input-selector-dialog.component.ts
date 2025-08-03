@@ -16,6 +16,8 @@ export class DeleteHardwareInputSelectorDialogComponent {
   wrapperConfig: DialogWrapperConfig;
   hardwareInput: HardwareInputDto;
   selector: HardwareInputSelectorDto;
+  disabled: boolean = true;
+  selectorName: string = '';
 
   constructor(
     private dialogRef: MatDialogRef<DeleteHardwareInputSelectorDialogComponent>,
@@ -25,13 +27,14 @@ export class DeleteHardwareInputSelectorDialogComponent {
   ) {
     this.hardwareInput = data.hardwareInput;
     this.selector = data.selector;
+    this.selectorName = this.selector.name;
     this.initializeWrapperConfig();
   }
 
   private initializeWrapperConfig(): void {
     this.wrapperConfig = {
       title: 'Delete Hardware Input Selector',
-      subtitle: `Are you sure you want to delete "${this.selector.name}"?`,
+      subtitle: `Are you sure you want to delete "${this.selectorName}"?`,
       icon: 'delete_forever',
       size: 'small',
       showCloseButton: true,
@@ -41,6 +44,10 @@ export class DeleteHardwareInputSelectorDialogComponent {
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  onInputChange(target: HTMLInputElement) {
+    this.disabled = target.value !== this.selectorName;
   }
 
   onConfirm(): void {

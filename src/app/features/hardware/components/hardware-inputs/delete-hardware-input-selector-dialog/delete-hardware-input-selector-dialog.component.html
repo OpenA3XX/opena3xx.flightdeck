@@ -1,15 +1,27 @@
 <opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
-  <div class="confirmation-content">
-    <p>
-      You are about to delete the hardware input selector <strong>"{{ selector.name }}"</strong>
-      from the hardware input <strong>"{{ hardwareInput.name }}"</strong>.
-    </p>
-    <p>This action cannot be undone.</p>
+  <div class="content-area">
+    <div class="confirmation-message">
+      Are you sure you want to delete <b>{{ selectorName }}</b> Hardware Input Selector?
+    </div>
+
+    <div class="warning-message">
+      Enter the word <b>{{ selectorName }}</b> to confirm. This will <u>permanently</u> delete
+      the entity.
+    </div>
+
+    <form autocomplete="off">
+      <mat-form-field class="example-full-width">
+        <input (input)="onInputChange($event.target)" matInput value="" />
+      </mat-form-field>
+    </form>
   </div>
 
   <div dialog-actions>
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="warn" (click)="onConfirm()">
+    <button mat-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button mat-raised-button color="warn" (click)="onConfirm()" [disabled]="disabled">
       <mat-icon>delete_forever</mat-icon>
       Delete Selector
     </button>

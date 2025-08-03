@@ -1,0 +1,38 @@
+<opena3xx-dialog-wrapper [config]="wrapperConfig" (close)="onCancel()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-content">
+      <opena3xx-input [field]="boardNameFieldConfig" [group]="form">
+      </opena3xx-input>
+
+      <opena3xx-slider
+        [field]="totalExtendersFieldConfig"
+        [group]="form"
+        (sliderValueChange)="onSliderValueChange($event)"
+      >
+      </opena3xx-slider>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Total I/O Count:</mat-label>
+        <input
+          autocomplete="off"
+          matInput
+          type="text"
+          disabled
+          value="{{ totalDiscreteInputOutput }}"
+        />
+        <mat-hint
+          >This is calculated based on how much IO Extender Buses are set on the board. (Total IOs =
+          Total Extenders x 16)</mat-hint
+        >
+      </mat-form-field>
+    </div>
+
+    <div dialog-actions>
+      <button mat-button type="button" (click)="onCancel()" [disabled]="loading">Cancel</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
+        <mat-icon>save</mat-icon>
+        Update Board
+      </button>
+    </div>
+  </form>
+</opena3xx-dialog-wrapper>
