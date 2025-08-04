@@ -1,0 +1,194 @@
+<div class="search-page">
+  <div class="search-header">
+    <h1>Advanced Search</h1>
+    <p>Search across all OpenA3XX entities with advanced filtering and faceted search</p>
+  </div>
+
+  <div class="search-container">
+    <!-- Search Form -->
+    <mat-card class="search-form-card">
+      <mat-card-header>
+        <mat-card-title>Search Criteria</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="searchForm" class="search-form">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="search-input">
+              <mat-label>Search Query</mat-label>
+              <input matInput formControlName="query" placeholder="Enter your search terms...">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row filters-row">
+            <div class="filter-group">
+              <mat-form-field appearance="outline">
+                <mat-label>Entity Types</mat-label>
+                <mat-select formControlName="entityTypes" multiple>
+                  <mat-option *ngFor="let entityType of entityTypes$ | async" [value]="entityType.id">
+                    {{ entityType.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="filter-group">
+              <mat-form-field appearance="outline">
+                <mat-label>Manufacturer</mat-label>
+                <input matInput formControlName="manufacturer" placeholder="Filter by manufacturer">
+              </mat-form-field>
+            </div>
+
+            <div class="filter-group">
+              <mat-form-field appearance="outline">
+                <mat-label>Sort By</mat-label>
+                <mat-select formControlName="sortBy">
+                  <mat-option value="relevance">Relevance</mat-option>
+                  <mat-option value="title">Title</mat-option>
+                  <mat-option value="createdDate">Created Date</mat-option>
+                  <mat-option value="updatedDate">Updated Date</mat-option>
+                  <mat-option value="entityType">Entity Type</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="filter-group">
+              <mat-form-field appearance="outline">
+                <mat-label>From Date</mat-label>
+                <input matInput formControlName="fromDate" type="date">
+              </mat-form-field>
+            </div>
+
+            <div class="filter-group">
+              <mat-form-field appearance="outline">
+                <mat-label>To Date</mat-label>
+                <input matInput formControlName="toDate" type="date">
+              </mat-form-field>
+            </div>
+
+            <div class="filter-group">
+              <mat-slider formControlName="minScore" min="0" max="1" step="0.1">
+                <input matSliderThumb>
+              </mat-slider>
+              <label>Min Score: {{ searchForm.get('minScore')?.value }}</label>
+            </div>
+
+            <div class="filter-group">
+              <mat-checkbox formControlName="includeInactive">
+                Include Inactive Items
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button mat-button (click)="clearFilters()">
+              <mat-icon>clear</mat-icon>
+              Clear Filters
+            </button>
+            <button mat-raised-button color="primary" (click)="exportResults()">
+              <mat-icon>download</mat-icon>
+              Export Results
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Search Results -->
+    <div class="search-results" *ngIf="searchResults$ | async as searchResponse">
+      <div class="results-header">
+        <h2>Search Results</h2>
+        <div class="results-info">
+          <span *ngIf="searchResponse.totalResults > 0">
+            {{ searchResponse.totalResults }} results found
+            <span *ngIf="searchResponse.executionTimeMs">
+              ({{ searchResponse.executionTimeMs }}ms)
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div class="loading-spinner" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Searching...</p>
+      </div>
+
+      <div class="results-list" *ngIf="!isLoading && searchResponse.results.length > 0">
+        <mat-card *ngFor="let result of searchResponse.results" class="result-card" (click)="onResultClick(result)">
+          <mat-card-content>
+            <div class="result-header">
+              <div class="result-icon" [style.background-color]="getEntityTypeInfo(result.entityType).color">
+                <mat-icon>{{ getEntityTypeInfo(result.entityType).icon }}</mat-icon>
+              </div>
+              <div class="result-info">
+                <h3 class="result-title">{{ result.title }}</h3>
+                <p class="result-type">{{ getEntityTypeInfo(result.entityType).label }}</p>
+                <p class="result-description" *ngIf="result.description">{{ result.description }}</p>
+                <p class="result-snippet" *ngIf="result.snippet">{{ result.snippet }}</p>
+                <p class="result-manufacturer" *ngIf="result.manufacturer">
+                  <mat-icon>business</mat-icon>
+                  {{ result.manufacturer }}
+                </p>
+                <div class="result-score" *ngIf="result.relevanceScore">
+                  <div class="score-bar">
+                    <div class="score-fill" [style.width.%]="result.relevanceScore * 100"></div>
+                  </div>
+                  <span class="score-text">{{ (result.relevanceScore * 100).toFixed(0) }}% match</span>
+                </div>
+              </div>
+              <div class="result-actions">
+                <mat-icon>arrow_forward</mat-icon>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="no-results" *ngIf="!isLoading && searchResponse.results.length === 0">
+        <mat-icon>search_off</mat-icon>
+        <h3>No results found</h3>
+        <p>Try adjusting your search criteria or filters</p>
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator
+        *ngIf="searchResponse.totalResults > 0"
+        [length]="searchResponse.totalResults"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage"
+        [pageSizeOptions]="[10, 20, 50, 100]"
+        (page)="onPageChange($event)">
+      </mat-paginator>
+    </div>
+
+    <!-- Facets -->
+    <mat-card class="facets-card" *ngIf="facets$ | async as facets">
+      <mat-card-header>
+        <mat-card-title>Filters</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="facet-group" *ngIf="facets.entityTypes">
+          <h4>Entity Types</h4>
+          <div class="facet-items">
+            <div *ngFor="let item of facets.entityTypes | keyvalue" class="facet-item">
+              <span class="facet-label">{{ item.key }}</span>
+              <span class="facet-count">({{ item.value }})</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="facet-group" *ngIf="facets.manufacturers">
+          <h4>Manufacturers</h4>
+          <div class="facet-items">
+            <div *ngFor="let item of facets.manufacturers | keyvalue" class="facet-item">
+              <span class="facet-label">{{ item.key }}</span>
+              <span class="facet-count">({{ item.value }})</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

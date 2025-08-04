@@ -1,12 +1,53 @@
-// Global table column width overrides
+// Clean table column width overrides - SINGLE SOURCE OF TRUTH
 :host ::ng-deep .data-table {
   table-layout: fixed !important;
+  width: 100% !important;
 
+  // Column 1: ID (10%)
   th.mat-header-cell:nth-child(1),
   td.mat-cell:nth-child(1) {
-    width: 3% !important;
-    min-width: 3% !important;
-    max-width: 3% !important;
+    width: 10% !important;
+    min-width: 10% !important;
+    max-width: 10% !important;
+    flex: 0 0 10% !important;
+  }
+
+  // Column 2: Name (15%)
+  th.mat-header-cell:nth-child(2),
+  td.mat-cell:nth-child(2) {
+    width: 15% !important;
+    min-width: 15% !important;
+    max-width: 15% !important;
+    flex: 0 0 15% !important;
+  }
+
+  // Column 3: Input/Output Type (20%)
+  th.mat-header-cell:nth-child(3),
+  td.mat-cell:nth-child(3) {
+    width: 20% !important;
+    min-width: 20% !important;
+    max-width: 20% !important;
+    flex: 0 0 20% !important;
+  }
+
+  // Column 4: Actions (55%)
+  th.mat-header-cell:nth-child(4),
+  td.mat-cell:nth-child(4) {
+    width: 55% !important;
+    min-width: 55% !important;
+    max-width: 55% !important;
+    flex: 0 0 55% !important;
+  }
+}
+
+// Additional high-specificity overrides to ensure they take effect
+:host ::ng-deep .table-container .data-table {
+  th.mat-header-cell:nth-child(1),
+  td.mat-cell:nth-child(1) {
+    width: 10% !important;
+    min-width: 10% !important;
+    max-width: 10% !important;
+    flex: 0 0 10% !important;
   }
 
   th.mat-header-cell:nth-child(2),
@@ -14,13 +55,62 @@
     width: 15% !important;
     min-width: 15% !important;
     max-width: 15% !important;
+    flex: 0 0 15% !important;
+  }
+
+  th.mat-header-cell:nth-child(3),
+  td.mat-cell:nth-child(3) {
+    width: 20% !important;
+    min-width: 20% !important;
+    max-width: 20% !important;
+    flex: 0 0 20% !important;
   }
 
   th.mat-header-cell:nth-child(4),
   td.mat-cell:nth-child(4) {
-    width: 65% !important;
-    min-width: 65% !important;
-    max-width: 65% !important;
+    width: 55% !important;
+    min-width: 55% !important;
+    max-width: 55% !important;
+    flex: 0 0 55% !important;
+  }
+}
+
+// Custom orange button styling for Set Link buttons
+.orange-button {
+  background-color: #ff9800 !important;
+  color: white !important;
+
+  &:hover {
+    background-color: #f57c00 !important;
+  }
+
+  &:focus {
+    background-color: #f57c00 !important;
+  }
+
+  &.mat-raised-button {
+    background-color: #ff9800 !important;
+    color: white !important;
+  }
+}
+
+// Custom medium grey button styling for Manage Selectors buttons
+.grey-button {
+  background-color: #dddddd !important;
+  color: #303030 !important;
+  border-color: #303030 !important;
+
+  &:hover {
+    background-color: #cccccc !important;
+  }
+
+  &:focus {
+    background-color: #cccccc !important;
+  }
+
+  &.mat-raised-button {
+    background-color: #757575 !important;
+    color: white !important;
   }
 }
 
@@ -59,7 +149,7 @@
 
   .overview-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-bottom: 24px;
   }
@@ -173,6 +263,8 @@
         color: #ff9800;
       }
     }
+
+
   }
 }
 
@@ -195,7 +287,6 @@
     width: 100%;
     min-width: 800px; // Ensure minimum width for content
     border-collapse: collapse;
-    table-layout: fixed !important; // Force fixed layout for column width control
 
     th.mat-header-cell {
       background: #f5f5f5;
@@ -215,31 +306,6 @@
           background: #e8e8e8;
         }
       }
-
-      // Column width specifications with !important to override Material styles
-      &:nth-child(1) { // ID column
-        width: 3% !important;
-        min-width: 3% !important;
-        max-width: 3% !important;
-      }
-
-      &:nth-child(2) { // Name column
-        width: 15% !important;
-        min-width: 15% !important;
-        max-width: 15% !important;
-      }
-
-      &:nth-child(3) { // Type column
-        width: 20% !important;
-        min-width: 20% !important;
-        max-width: 20% !important;
-      }
-
-      &:nth-child(4) { // Actions column
-        width: 65% !important;
-        min-width: 65% !important;
-        max-width: 65% !important;
-      }
     }
 
     td.mat-cell {
@@ -252,31 +318,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; // Prevent text wrapping in cells
-
-      // Column width specifications with !important to override Material styles
-      &:nth-child(1) { // ID column
-        width: 3% !important;
-        min-width: 3% !important;
-        max-width: 3% !important;
-      }
-
-      &:nth-child(2) { // Name column
-        width: 15% !important;
-        min-width: 15% !important;
-        max-width: 15% !important;
-      }
-
-      &:nth-child(3) { // Type column
-        width: 20% !important;
-        min-width: 20% !important;
-        max-width: 20% !important;
-      }
-
-      &:nth-child(4) { // Actions column
-        width: 65% !important;
-        min-width: 65% !important;
-        max-width: 65% !important;
-      }
     }
 
     tr.mat-row {
@@ -327,32 +368,6 @@
         }
       }
     }
-  }
-
-  // Additional specific column width overrides
-  .data-table th.mat-header-cell:nth-child(1),
-  .data-table td.mat-cell:nth-child(1) {
-    width: 3% !important;
-    min-width: 3% !important;
-    max-width: 3% !important;
-    flex: 0 0 3% !important;
-  }
-
-  // Additional specific column width overrides
-  .data-table th.mat-header-cell:nth-child(2),
-  .data-table td.mat-cell:nth-child(2) {
-    width: 15% !important;
-    min-width: 15% !important;
-    max-width: 15% !important;
-    flex: 0 0 15% !important;
-  }
-
-  .data-table th.mat-header-cell:nth-child(4),
-  .data-table td.mat-cell:nth-child(4) {
-    width: 65% !important;
-    min-width: 65% !important;
-    max-width: 65% !important;
-    flex: 0 0 65% !important;
   }
 
   // Specific column width classes
@@ -610,6 +625,8 @@
     &.outputs-card .card-value {
       color: #ff9800 !important;
     }
+
+
   }
 
   .table-container {

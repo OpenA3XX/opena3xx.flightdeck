@@ -21,11 +21,6 @@
   </opena3xx-forms-select>
 
   <div class="button-container">
-    <button type="submit" mat-flat-button color="primary" [disabled]="removingMapping">
-      <mat-icon>check</mat-icon>
-      Save
-    </button>
-
     <!-- Remove Mapping Button -->
     <button
       type="button"
@@ -35,6 +30,11 @@
       (click)="onRemoveMapping()">
       <mat-icon>delete</mat-icon>
       Remove Mapping
+    </button>
+
+    <button type="submit" mat-flat-button color="primary" [disabled]="removingMapping">
+      <mat-icon>check</mat-icon>
+      Save
     </button>
   </div>
 </form>

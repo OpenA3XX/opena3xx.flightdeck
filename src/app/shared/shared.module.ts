@@ -26,9 +26,6 @@ import { DialogWrapperComponent } from './components/ui/dialog-wrapper/dialog-wr
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
 
-// Directives
-import { ClickOutsideDirective } from './directives/click-outside.directive';
-
 @NgModule({
   declarations: [
     // UI Components
@@ -52,10 +49,7 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 
     // Pipes
     FormatDatePipe,
-    TruncatePipe,
-
-    // Directives
-    ClickOutsideDirective
+    TruncatePipe
   ],
   imports: [
     CommonModule,
@@ -85,10 +79,7 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 
     // Pipes
     FormatDatePipe,
-    TruncatePipe,
-
-    // Directives
-    ClickOutsideDirective
+    TruncatePipe
   ]
 })
 export class SharedModule { }

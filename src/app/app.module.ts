@@ -32,6 +32,7 @@ import { AircraftModelsModule } from './features/aircraft-models/aircraft-models
 
 // Shared Module
 import { SharedModule } from './shared/shared.module';
+import { UniversalSearchComponent } from './shared/components/ui/universal-search/universal-search.component';
 
 // Core Components
 import { ExitAppDialogComponent } from './core/components/exit-app-dialog.component';
@@ -56,7 +57,9 @@ import { ExitAppDialogComponent } from './core/components/exit-app-dialog.compon
         SettingsModule,
         AircraftModelsModule,
         // Shared Module
-        SharedModule], providers: [
+        SharedModule,
+        // Standalone Components
+        UniversalSearchComponent], providers: [
         DataService,
         CoreHelper,
         ConfigurationService,

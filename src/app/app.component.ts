@@ -11,6 +11,7 @@ import { DependencyStatusService, DependencyStatusResponse, DependencyStatus } f
 import { NotificationService } from './features/notifications/services/notification.service';
 import { AppStateService } from './core/services/app-state.service';
 import { Subscription } from 'rxjs';
+import { UniversalSearchComponent } from './shared/components/ui/universal-search/universal-search.component';
 
 /**
  * @title Autosize sidenav

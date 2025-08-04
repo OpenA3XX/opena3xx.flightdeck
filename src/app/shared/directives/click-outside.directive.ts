@@ -2,7 +2,7 @@ import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angu
 
 @Directive({
     selector: '[opena3xxClickOutside]',
-    standalone: false
+    standalone: true
 })
 export class ClickOutsideDirective {
   @Output() clickOutside = new EventEmitter<void>();

@@ -96,6 +96,17 @@
         <div class="card-subtitle">{{ hardwarePanelDto.totalOutputsDiscrete }} discrete</div>
       </mat-card-content>
     </mat-card>
+
+    <mat-card class="overview-card total-discrete-card">
+      <mat-card-content>
+        <div class="card-header">
+          <mat-icon>calculate</mat-icon>
+          <span class="card-title">Total Discrete</span>
+        </div>
+        <div class="card-value">{{ (hardwarePanelDto.totalInputsDiscrete || 0) + (hardwarePanelDto.totalOutputsDiscrete || 0) }}</div>
+        <div class="card-subtitle">Inputs + Outputs</div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
 
@@ -116,28 +127,28 @@
   </div>
 
   <div *ngIf="showHardwareInputs" class="table-container">
-    <table mat-table [dataSource]="inputsDataSource" matSort #inputSort="matSort" class="data-table">
+    <table mat-table [dataSource]="inputsDataSource" matSort #inputSort="matSort" class="data-table" style="table-layout: fixed !important; width: 100% !important;">
       <!-- ID Column -->
       <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-        <td mat-cell *matCellDef="let input">{{ input.id }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10% !important; min-width: 10% !important; max-width: 10% !important;">ID</th>
+        <td mat-cell *matCellDef="let input" style="width: 10% !important; min-width: 10% !important; max-width: 10% !important;">{{ input.id }}</td>
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="name-column">Name</th>
-        <td mat-cell *matCellDef="let input" class="name-column">{{ input.name }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="name-column" style="width: 15% !important; min-width: 15% !important; max-width: 15% !important;">Name</th>
+        <td mat-cell *matCellDef="let input" class="name-column" style="width: 15% !important; min-width: 15% !important; max-width: 15% !important;">{{ input.name }}</td>
       </ng-container>
 
       <!-- Hardware Input Type Column -->
       <ng-container matColumnDef="hardwareInputType">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Input Type</th>
-        <td mat-cell *matCellDef="let input">{{ input.hardwareInputType }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 20% !important; min-width: 20% !important; max-width: 20% !important;">Input Type</th>
+        <td mat-cell *matCellDef="let input" style="width: 20% !important; min-width: 20% !important; max-width: 20% !important;">{{ input.hardwareInputType }}</td>
       </ng-container>
 
       <!-- Actions Column -->
       <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef style="width: 55% !important; min-width: 55% !important; max-width: 55% !important;">Actions</th>
         <td mat-cell *matCellDef="let input">
           <div class="action-buttons">
             <button
@@ -181,11 +192,35 @@
               (click)="linkInputSelector(input)"
               *ngIf="input.hardwareInputSelectors?.[0]?.simulatorEventDto === null"
               mat-raised-button
-              color="primary"
-              class="action-button">
+              class="action-button orange-button">
               <mat-icon>laptop</mat-icon>
               Set Link
             </button>
+            <button
+              mat-raised-button
+              class="action-button grey-button"
+              [matMenuTriggerFor]="inputSelectorMenu"
+              matTooltip="Manage Input Selectors"
+              matTooltipPosition="above">
+              <mat-icon>list</mat-icon>
+              Manage Selectors
+            </button>
+
+            <mat-menu #inputSelectorMenu="matMenu">
+              <button
+                mat-menu-item
+                (click)="addInputSelector(input)">
+                <mat-icon>add</mat-icon>
+                Add Selector
+              </button>
+              <button
+                *ngFor="let selector of input.hardwareInputSelectors"
+                mat-menu-item
+                (click)="deleteInputSelector(input, selector)">
+                <mat-icon>delete</mat-icon>
+                Delete {{ selector.name }}
+              </button>
+            </mat-menu>
             <button
               (click)="deleteHardwareInput(input)"
               mat-raised-button
@@ -194,7 +229,7 @@
               matTooltip="Delete Hardware Input"
               matTooltipPosition="above">
               <mat-icon>delete</mat-icon>
-              Delete
+              Delete Input
             </button>
           </div>
         </td>
@@ -223,82 +258,27 @@
   </div>
 
   <div *ngIf="showHardwareOutputs" class="table-container">
-    <table mat-table [dataSource]="outputsDataSource" matSort #outputSort="matSort" class="data-table">
+    <table mat-table [dataSource]="outputsDataSource" matSort #outputSort="matSort" class="data-table" style="table-layout: fixed !important; width: 100% !important;">
       <!-- ID Column -->
       <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-        <td mat-cell *matCellDef="let output">{{ output.id }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10% !important; min-width: 10% !important; max-width: 10% !important;">ID</th>
+        <td mat-cell *matCellDef="let output" style="width: 10% !important; min-width: 10% !important; max-width: 10% !important;">{{ output.id }}</td>
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="name-column">Name</th>
-        <td mat-cell *matCellDef="let output" class="name-column">{{ output.name }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="name-column" style="width: 15% !important; min-width: 15% !important; max-width: 15% !important;">Name</th>
+        <td mat-cell *matCellDef="let output" class="name-column" style="width: 15% !important; min-width: 15% !important; max-width: 15% !important;">{{ output.name }}</td>
       </ng-container>
 
       <!-- Hardware Output Type Column -->
       <ng-container matColumnDef="hardwareOutputType">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Output Type</th>
-        <td mat-cell *matCellDef="let output">{{ output.hardwareOutputType }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 20% !important; min-width: 20% !important; max-width: 20% !important;">Output Type</th>
+        <td mat-cell *matCellDef="let output" style="width: 20% !important; min-width: 20% !important; max-width: 20% !important;">{{ output.hardwareOutputType }}</td>
       </ng-container>
 
-      <!-- Actions Column -->
-      <!-- <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let output">
-          <div class="action-buttons">
-            <button
-              (click)="showOutputSelectorDetails(output)"
-              mat-raised-button
-              color="primary"
-              class="action-button"
-              matTooltip="View {{ output.hardwareOutputSelectors.length }} Output(s)"
-              matTooltipPosition="above">
-              <mat-icon>remove_red_eye</mat-icon>
-              View
-            </button>
-            <button
-              (click)="mapOutputSelector(output)"
-              *ngIf="output.hardwareOutputSelectors[0]?.isHardwareOutputSelectorMappedWithHardware === false"
-              mat-raised-button
-              color="primary"
-              class="action-button">
-              <mat-icon>link</mat-icon>
-              Map
-            </button>
-            <button
-              (click)="linkOutputSelector(output)"
-              *ngIf="output.hardwareOutputSelectors[0]?.isHardwareOutputSelectorMappedWithHardware === true"
-              mat-raised-button
-              color="warn"
-              class="action-button edit-button">
-              <mat-icon>link</mat-icon>
-              Edit Map
-            </button>
-            <button
-              (click)="linkOutputSelector(output)"
-              *ngIf="output.hardwareOutputSelectors[0]?.simulatorEventDto !== null"
-              mat-raised-button
-              color="warn"
-              class="action-button edit-button">
-              <mat-icon>laptop</mat-icon>
-              Edit Link
-            </button>
-            <button
-              (click)="linkOutputSelector(output)"
-              *ngIf="output.hardwareOutputSelectors[0]?.simulatorEventDto === null"
-              mat-raised-button
-              color="primary"
-              class="action-button">
-              <mat-icon>laptop</mat-icon>
-              Set Link
-            </button>
-          </div>
-        </td>
-      </ng-container> -->
-
       <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef style="width: 55% !important; min-width: 55% !important; max-width: 55% !important;">Actions</th>
         <td mat-cell *matCellDef="let output">
           <div class="action-buttons">
             <button
@@ -342,11 +322,35 @@
               (click)="linkOutputSelector(output)"
               *ngIf="output.hardwareOutputSelectors?.[0]?.simulatorEventDto === null"
               mat-raised-button
-              color="primary"
-              class="action-button">
+              class="action-button orange-button">
               <mat-icon>laptop</mat-icon>
               Set Link
             </button>
+            <button
+              mat-raised-button
+              class="action-button grey-button"
+              [matMenuTriggerFor]="outputSelectorMenu"
+              matTooltip="Manage Output Selectors"
+              matTooltipPosition="above">
+              <mat-icon>list</mat-icon>
+              Manage Selectors
+            </button>
+
+            <mat-menu #outputSelectorMenu="matMenu">
+              <button
+                mat-menu-item
+                (click)="addOutputSelector(output)">
+                <mat-icon>add</mat-icon>
+                Add Selector
+              </button>
+              <button
+                *ngFor="let selector of output.hardwareOutputSelectors"
+                mat-menu-item
+                (click)="deleteOutputSelector(output, selector)">
+                <mat-icon>delete</mat-icon>
+                Delete {{ selector.name }}
+              </button>
+            </mat-menu>
             <button
               (click)="deleteHardwareOutput(output)"
               mat-raised-button
@@ -355,7 +359,7 @@
               matTooltip="Delete Hardware Output"
               matTooltipPosition="above">
               <mat-icon>delete</mat-icon>
-              Delete
+              Delete Output
             </button>
           </div>
         </td>

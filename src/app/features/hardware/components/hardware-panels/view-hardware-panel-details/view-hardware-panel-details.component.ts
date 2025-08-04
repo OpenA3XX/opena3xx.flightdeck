@@ -15,6 +15,10 @@ import { DeleteHardwareInputDialogComponent } from '../../hardware-inputs/delete
 import { AddHardwareInputDialogComponent } from '../../hardware-inputs/add-hardware-input-dialog/add-hardware-input-dialog.component';
 import { AddHardwareOutputDialogComponent } from '../../hardware-outputs/add-hardware-output-dialog/add-hardware-output-dialog.component';
 import { EditHardwarePanelDialogComponent } from '../edit-hardware-panel-dialog/edit-hardware-panel-dialog.component';
+import { AddHardwareInputSelectorDialogComponent } from '../../hardware-input-selectors/add-hardware-input-selector-dialog/add-hardware-input-selector-dialog.component';
+import { AddHardwareOutputSelectorDialogComponent } from '../../hardware-output-selectors/add-hardware-output-selector-dialog/add-hardware-output-selector-dialog.component';
+import { DeleteHardwareInputSelectorDialogComponent } from '../../hardware-input-selectors/delete-hardware-input-selector-dialog/delete-hardware-input-selector-dialog.component';
+import { DeleteHardwareOutputSelectorDialogComponent } from '../../hardware-output-selectors/delete-hardware-output-selector-dialog/delete-hardware-output-selector-dialog.component';
 import { PageHeaderAction } from 'src/app/shared/components/ui/page-header/page-header.component';
 import { ThemeService } from 'src/app/core/services/theme.service';
 import { Subscription } from 'rxjs';
@@ -283,6 +287,68 @@ export class ViewHardwarePanelDetailsComponent implements OnInit, AfterViewInit,
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.action === 'deleted') {
         // Refresh the data to reflect the deletion
+        this.fetchData();
+      }
+    });
+  }
+
+  addInputSelector(hardwareInput: HardwareInputDto) {
+    const dialogRef = this.dialog.open(AddHardwareInputSelectorDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { hardwareInput }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.action === 'added') {
+        this.fetchData();
+      }
+    });
+  }
+
+  addOutputSelector(hardwareOutput: HardwareOutputDto) {
+    const dialogRef = this.dialog.open(AddHardwareOutputSelectorDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { hardwareOutput }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.action === 'added') {
+        this.fetchData();
+      }
+    });
+  }
+
+  getInputSelectorsCount(hardwareInput: HardwareInputDto): number {
+    return hardwareInput.hardwareInputSelectors?.length || 0;
+  }
+
+  getOutputSelectorsCount(hardwareOutput: HardwareOutputDto): number {
+    return hardwareOutput.hardwareOutputSelectors?.length || 0;
+  }
+
+  deleteInputSelector(hardwareInput: HardwareInputDto, selector: any): void {
+    const dialogRef = this.dialog.open(DeleteHardwareInputSelectorDialogComponent, {
+      width: '400px',
+      data: { hardwareInput, selector }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
+        this.fetchData();
+      }
+    });
+  }
+
+  deleteOutputSelector(hardwareOutput: HardwareOutputDto, selector: any): void {
+    const dialogRef = this.dialog.open(DeleteHardwareOutputSelectorDialogComponent, {
+      width: '400px',
+      data: { hardwareOutput, selector }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.action === 'deleted') {
         this.fetchData();
       }
     });

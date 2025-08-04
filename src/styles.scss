@@ -879,3 +879,19 @@ mat-table,
     }
   }
 }
+
+// Alternative global approach
+.cdk-overlay-pane .mat-mdc-autocomplete-panel {
+  max-height: 500px !important;
+  min-width: 600px !important;
+  max-width: 800px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: white !important;
+  margin-top: 8px !important;
+  z-index: 1000 !important;
+  padding: 8px 0 !important;
+}
+
+

@@ -1,0 +1,77 @@
+<!-- Universal Search Component -->
+<div class="universal-search-container" opena3xxClickOutside (clickOutside)="hideDropdown()">
+  <!-- Search Input Field -->
+  <div class="search-field">
+    <div class="search-input-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        #searchInput
+        type="text"
+        class="search-input"
+        [formControl]="searchControl"
+        placeholder="Search hardware panels, types, boards..."
+        autocomplete="off"
+        (keydown.escape)="clearSearchInput()"
+        (keydown.arrowdown)="navigateResults(1)"
+        (keydown.arrowup)="navigateResults(-1)"
+        (keydown.enter)="selectCurrentResult()"
+        (blur)="onInputBlur()">
+    </div>
+
+    <!-- Custom Dropdown - Only show when there are results AND input has 2+ characters -->
+    <div class="search-dropdown" *ngIf="(filteredResults$ | async)?.length > 0 && searchControl.value && searchControl.value.length >= 2">
+      <div
+        *ngFor="let result of filteredResults$ | async; let i = index"
+        class="search-result-item"
+        [class.selected]="i === selectedIndex"
+        (click)="selectResult(result)"
+        (mouseenter)="selectedIndex = i">
+
+        <div class="result-icon" [style.background-color]="getTypeColor(result.type)">
+          <mat-icon>{{ getTypeIcon(result.type) }}</mat-icon>
+        </div>
+
+        <div class="result-content">
+          <div class="result-name">{{ result.name }}</div>
+          <div class="result-type">{{ getTypeLabel(result.type) }}</div>
+          <div class="result-description" *ngIf="result.description">
+            {{ result.description }}
+          </div>
+          <div class="result-snippet" *ngIf="result.snippet">
+            {{ result.snippet }}
+          </div>
+          <div class="result-manufacturer" *ngIf="result.manufacturer">
+            <mat-icon class="manufacturer-icon">business</mat-icon>
+            {{ result.manufacturer }}
+          </div>
+          <div class="result-score" *ngIf="result.relevanceScore">
+            <div class="score-bar">
+              <div class="score-fill" [style.width.%]="result.relevanceScore * 100"></div>
+            </div>
+            <span class="score-text">{{ (result.relevanceScore * 100).toFixed(0) }}% match</span>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <mat-icon class="navigate-icon">arrow_forward</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State - Only show when input has 2+ characters -->
+    <div class="search-dropdown loading-dropdown" *ngIf="isLoading && searchControl.value && searchControl.value.length >= 2">
+      <div class="loading-state">
+        <mat-spinner diameter="20"></mat-spinner>
+        <span>Searching...</span>
+      </div>
+    </div>
+
+    <!-- No Results - Only show when input has 2+ characters -->
+    <div class="search-dropdown no-results-dropdown" *ngIf="!isLoading && (filteredResults$ | async)?.length === 0 && searchControl.value && searchControl.value.length >= 2">
+      <div class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <span>No results found</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -35,6 +35,9 @@
   box-shadow: var(--shadow-sm);
   // background-color: #0360ec;
   background: linear-gradient(to bottom, #0061ed, #448bf0);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
 
   // Theme toggle button styles
   button[matTooltip="Toggle Theme"] {
@@ -59,8 +62,23 @@
     margin: 0;
     user-select: none;
     color: var(--mat-sys-on-primary, white);
+    flex-shrink: 0;
+    margin-right: 20px;
+  }
+
+  // Universal Search positioning
+  app-universal-search {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    max-width: 400px;
+    top: 3px;
   }
 }
+
+
+
 
 // API status styles
 .api-status {
