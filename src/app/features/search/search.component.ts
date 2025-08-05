@@ -19,8 +19,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, takeUntil, map, startWith } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, combineLatest, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil, map, startWith, catchError } from 'rxjs/operators';
 import { SearchService, SearchResponse, SearchFilters, SearchResult, EntityType } from '../../core/services/search.service';
 
 @Component({
@@ -55,20 +55,13 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchForm: FormGroup;
   searchResults$: Observable<SearchResponse | null>;
   entityTypes$: Observable<EntityType[]>;
-  isLoading = false;
   currentPage = 0;
   pageSize = 20;
   totalResults = 0;
+  errorMessage: string | null = null;
 
   // Facets
   facets$ = new BehaviorSubject<any>(null);
-
-  // Filters
-  selectedEntityTypes: string[] = [];
-  selectedManufacturers: string[] = [];
-  selectedHardwareTypes: string[] = [];
-  selectedSimulatorSdkTypes: string[] = [];
-  selectedDateRanges: string[] = [];
 
   private destroy$ = new Subject<void>();
   private searchTrigger$ = new BehaviorSubject<{ query: string; filters: SearchFilters }>({
@@ -84,16 +77,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchForm = this.fb.group({
       query: [''],
       entityTypes: [[]],
-      manufacturers: [[]],
-      hardwareTypes: [[]],
-      simulatorSdkTypes: [[]],
-      dateRanges: [[]],
       minScore: [0.1],
       includeInactive: [false],
-      sortBy: ['relevance'],
-      fromDate: [''],
-      toDate: [''],
-      manufacturer: ['']
+      sortBy: ['relevance']
     });
 
     this.entityTypes$ = this.searchService.getEntityTypes();
@@ -111,20 +97,22 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   private setupSearchSubscription(): void {
     this.searchResults$ = this.searchTrigger$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
       switchMap(({ query, filters }) => {
-        if (!query || query.trim().length < 2) {
-          return [null];
+        if (!query || query.trim().length === 0) {
+          return of(null);
         }
 
-        this.isLoading = true;
+        this.errorMessage = null;
+
         return this.searchService.search(query, filters).pipe(
           map(response => {
-            this.isLoading = false;
             this.totalResults = response.totalResults;
-            this.facets$.next(response.facets);
             return response;
+          }),
+          catchError(error => {
+            this.errorMessage = error.message || 'Something went wrong. Please try again.';
+            console.error('Search error:', error);
+            return of(null);
           })
         );
       }),
@@ -137,19 +125,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     combineLatest([
       this.searchForm.get('query')!.valueChanges.pipe(startWith('')),
       this.searchForm.get('entityTypes')!.valueChanges.pipe(startWith([])),
-      this.searchForm.get('manufacturers')!.valueChanges.pipe(startWith([])),
-      this.searchForm.get('hardwareTypes')!.valueChanges.pipe(startWith([])),
-      this.searchForm.get('simulatorSdkTypes')!.valueChanges.pipe(startWith([])),
-      this.searchForm.get('dateRanges')!.valueChanges.pipe(startWith([])),
       this.searchForm.get('minScore')!.valueChanges.pipe(startWith(0.1)),
       this.searchForm.get('includeInactive')!.valueChanges.pipe(startWith(false)),
-      this.searchForm.get('sortBy')!.valueChanges.pipe(startWith('relevance')),
-      this.searchForm.get('fromDate')!.valueChanges.pipe(startWith('')),
-      this.searchForm.get('toDate')!.valueChanges.pipe(startWith('')),
-      this.searchForm.get('manufacturer')!.valueChanges.pipe(startWith(''))
+      this.searchForm.get('sortBy')!.valueChanges.pipe(startWith('relevance'))
     ]).pipe(
       takeUntil(this.destroy$)
-    ).subscribe(([query, entityTypes, manufacturers, hardwareTypes, simulatorSdkTypes, dateRanges, minScore, includeInactive, sortBy, fromDate, toDate, manufacturer]) => {
+    ).subscribe(([query, entityTypes, minScore, includeInactive, sortBy]) => {
       const filters: SearchFilters = {
         type: entityTypes.length > 0 ? entityTypes.join(',') : undefined,
         limit: this.pageSize,
@@ -157,9 +138,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         minScore,
         includeInactive,
         sortBy: sortBy as any,
-        fromDate: fromDate || undefined,
-        toDate: toDate || undefined,
-        manufacturer: manufacturer || undefined,
         includeFacets: true
       };
 
@@ -182,9 +160,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       minScore: formValue.minScore,
       includeInactive: formValue.includeInactive,
       sortBy: formValue.sortBy,
-      fromDate: formValue.fromDate || undefined,
-      toDate: formValue.toDate || undefined,
-      manufacturer: formValue.manufacturer || undefined,
       includeFacets: true
     };
 
@@ -192,11 +167,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onResultClick(result: SearchResult): void {
-    if (result.actions && result.actions.length > 0) {
-      const primaryAction = result.actions.find(action => action.name === 'view') || result.actions[0];
-      const frontendUrl = this.convertApiUrlToFrontendRoute(primaryAction.url);
-      this.router.navigateByUrl(frontendUrl);
-    }
+    // if (result.actions && result.actions.length > 0) {
+    //   const primaryAction = result.actions.find(action => action.name === 'view') || result.actions[0];
+    //   const frontendUrl = this.convertApiUrlToFrontendRoute(primaryAction.url);
+    //   this.router.navigateByUrl(frontendUrl);
+    // }
   }
 
   private convertApiUrlToFrontendRoute(apiUrl: string): string {
@@ -239,21 +214,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   clearFilters(): void {
     this.searchForm.patchValue({
       entityTypes: [],
-      manufacturers: [],
-      hardwareTypes: [],
-      simulatorSdkTypes: [],
-      dateRanges: [],
       minScore: 0.1,
       includeInactive: false,
-      sortBy: 'relevance',
-      fromDate: '',
-      toDate: '',
-      manufacturer: ''
+      sortBy: 'relevance'
     });
   }
 
-  exportResults(): void {
-    // TODO: Implement export functionality
-    console.log('Export results');
-  }
+
 }

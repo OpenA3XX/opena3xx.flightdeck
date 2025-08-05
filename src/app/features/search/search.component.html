@@ -87,10 +87,6 @@
               <mat-icon>clear</mat-icon>
               Clear Filters
             </button>
-            <button mat-raised-button color="primary" (click)="exportResults()">
-              <mat-icon>download</mat-icon>
-              Export Results
-            </button>
           </div>
         </form>
       </mat-card-content>
@@ -110,12 +106,18 @@
         </div>
       </div>
 
-      <div class="loading-spinner" *ngIf="isLoading">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Searching...</p>
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="errorMessage">
+        <mat-icon>error</mat-icon>
+        <h3>Search Error</h3>
+        <p>{{ errorMessage }}</p>
+        <button mat-raised-button color="primary" (click)="triggerSearch()">
+          <mat-icon>refresh</mat-icon>
+          Try Again
+        </button>
       </div>
 
-      <div class="results-list" *ngIf="!isLoading && searchResponse.results.length > 0">
+      <div class="results-list" *ngIf="!errorMessage && searchResponse.results.length > 0">
         <mat-card *ngFor="let result of searchResponse.results" class="result-card" (click)="onResultClick(result)">
           <mat-card-content>
             <div class="result-header">
@@ -146,7 +148,7 @@
         </mat-card>
       </div>
 
-      <div class="no-results" *ngIf="!isLoading && searchResponse.results.length === 0">
+      <div class="no-results" *ngIf="!errorMessage && searchResponse.results.length === 0">
         <mat-icon>search_off</mat-icon>
         <h3>No results found</h3>
         <p>Try adjusting your search criteria or filters</p>
@@ -179,15 +181,7 @@
           </div>
         </div>
 
-        <div class="facet-group" *ngIf="facets.manufacturers">
-          <h4>Manufacturers</h4>
-          <div class="facet-items">
-            <div *ngFor="let item of facets.manufacturers | keyvalue" class="facet-item">
-              <span class="facet-label">{{ item.key }}</span>
-              <span class="facet-count">({{ item.value }})</span>
-            </div>
-          </div>
-        </div>
+
       </mat-card-content>
     </mat-card>
   </div>

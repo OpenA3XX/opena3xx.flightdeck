@@ -10,6 +10,7 @@
         class="search-input"
         [formControl]="searchControl"
         placeholder="Search hardware panels, types, boards..."
+
         autocomplete="off"
         (keydown.escape)="clearSearchInput()"
         (keydown.arrowdown)="navigateResults(1)"
@@ -58,16 +59,16 @@
       </div>
     </div>
 
-    <!-- Loading State - Only show when input has 2+ characters -->
-    <div class="search-dropdown loading-dropdown" *ngIf="isLoading && searchControl.value && searchControl.value.length >= 2">
-      <div class="loading-state">
-        <mat-spinner diameter="20"></mat-spinner>
-        <span>Searching...</span>
+    <!-- Error State - Only show when there's an error and input has 2+ characters -->
+    <div class="search-dropdown error-dropdown" *ngIf="errorMessage && searchControl.value && searchControl.value.length >= 2">
+      <div class="error-state">
+        <mat-icon>error</mat-icon>
+        <span>{{ errorMessage }}</span>
       </div>
     </div>
 
-    <!-- No Results - Only show when input has 2+ characters -->
-    <div class="search-dropdown no-results-dropdown" *ngIf="!isLoading && (filteredResults$ | async)?.length === 0 && searchControl.value && searchControl.value.length >= 2">
+    <!-- No Results - Only show when input has 2+ characters and no error -->
+    <div class="search-dropdown no-results-dropdown" *ngIf="!errorMessage && (filteredResults$ | async)?.length === 0 && searchControl.value && searchControl.value.length >= 2">
       <div class="no-results">
         <mat-icon>search_off</mat-icon>
         <span>No results found</span>

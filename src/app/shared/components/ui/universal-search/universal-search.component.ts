@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,8 +44,8 @@ export class UniversalSearchComponent implements OnInit, OnDestroy, AfterViewIni
 
   searchControl = new FormControl('');
   filteredResults$: Observable<LegacySearchResult[]> = of([]);
-  isLoading = false;
   searchResults: LegacySearchResult[] = [];
+  errorMessage: string | null = null;
   searchFilters: SearchFilters = {
     limit: 10,
     minScore: 0.1,
@@ -56,7 +57,10 @@ export class UniversalSearchComponent implements OnInit, OnDestroy, AfterViewIni
 
   private destroy$ = new Subject<void>();
 
-  constructor(private searchService: SearchService) {}
+  constructor(
+    private searchService: SearchService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.setupSearchSubscription();
@@ -85,22 +89,21 @@ export class UniversalSearchComponent implements OnInit, OnDestroy, AfterViewIni
 
   private setupSearchSubscription(): void {
     this.filteredResults$ = this.searchControl.valueChanges.pipe(
-      debounceTime(300),
+      debounceTime(50),
       distinctUntilChanged(),
       filter((value): value is string => typeof value === 'string' && value.length >= 2),
       switchMap(value => {
-        this.isLoading = true;
+        this.errorMessage = null;
         console.log('Searching for:', value);
         return this.performSearch(value).pipe(
           map(results => {
             console.log('Search results:', results);
-            this.isLoading = false;
             this.selectedIndex = 0; // Reset selection
             return results;
           }),
           catchError(error => {
             console.error('Search error:', error);
-            this.isLoading = false;
+            this.errorMessage = error.message || 'Something went wrong. Please try again.';
             return of([]);
           })
         );
@@ -121,8 +124,7 @@ export class UniversalSearchComponent implements OnInit, OnDestroy, AfterViewIni
       }),
       catchError(error => {
         console.error('Search error:', error);
-        // Fallback to empty results on error
-        return of([]);
+        throw error; // Re-throw to be handled by the calling method
       })
     );
   }
@@ -167,8 +169,8 @@ export class UniversalSearchComponent implements OnInit, OnDestroy, AfterViewIni
 
   selectResult(result: LegacySearchResult): void {
     if (result.url) {
-      // Navigate to the selected item
-      window.location.href = result.url;
+      // Navigate to the selected item using Angular Router
+      this.router.navigateByUrl(result.url);
     }
     this.clearSearchInput();
   }

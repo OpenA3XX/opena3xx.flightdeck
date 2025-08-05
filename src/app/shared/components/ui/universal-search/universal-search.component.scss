@@ -279,9 +279,10 @@
   }
 }
 
-// Loading and No Results States
+// Loading, Error and No Results States
 .loading-dropdown,
-.no-results-dropdown {
+.no-results-dropdown,
+.error-dropdown {
   padding: 20px;
   text-align: center;
 }
@@ -324,6 +325,30 @@
 
   .dark-theme & {
     color: #888;
+  }
+}
+
+.error-state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #d32f2f;
+  justify-content: center;
+
+  mat-icon {
+    color: #d32f2f;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .dark-theme & {
+    color: #f44336;
   }
 }
 

@@ -11,9 +11,6 @@ export interface SearchFilters {
   offset?: number;
   minScore?: number;
   includeInactive?: boolean;
-  fromDate?: string;
-  toDate?: string;
-  manufacturer?: string;
   sortBy?: 'relevance' | 'title' | 'createdDate' | 'updatedDate' | 'entityType';
   includeFacets?: boolean;
 }
@@ -38,7 +35,6 @@ export interface SearchResult {
   manufacturer?: string;
   relevanceScore: number;
   snippet: string;
-  metadata: Record<string, any>;
   actions: SearchResultAction[];
   createdAt?: string;
   updatedAt?: string;
@@ -47,22 +43,10 @@ export interface SearchResult {
 export interface SearchResultAction {
   name: string;
   url: string;
-  method: string;
-  requiresConfirmation: boolean;
 }
 
 export interface SearchFacets {
   entityTypes: Record<string, number>;
-  manufacturers: Record<string, number>;
-  hardwareTypes: Record<string, number>;
-  simulatorSdkTypes: Record<string, number>;
-  dateRanges: Record<string, number>;
-}
-
-export interface SearchSuggestion {
-  text: string;
-  type: string;
-  score: number;
 }
 
 export interface EntityType {
@@ -70,14 +54,6 @@ export interface EntityType {
   name: string;
   description: string;
   icon: string;
-}
-
-export interface SearchStatistics {
-  totalSearches: number;
-  averageQueryLength: number;
-  mostSearchedTerms: string[];
-  searchSuccessRate: number;
-  averageResponseTime: number;
 }
 
 @Injectable({
@@ -108,39 +84,11 @@ export class SearchService {
     if (filters.type) {
       params.set('type', filters.type);
     }
-    if (filters.fromDate) {
-      params.set('fromDate', filters.fromDate);
-    }
-    if (filters.toDate) {
-      params.set('toDate', filters.toDate);
-    }
-    if (filters.manufacturer) {
-      params.set('manufacturer', filters.manufacturer);
-    }
-    if (filters.sortBy) {
-      params.set('sortBy', filters.sortBy);
-    }
 
     return this.http.get<SearchResponse>(`${this.BASE_URL}/api/search`, { params }).pipe(
       catchError(error => {
-        console.warn('Search API not available, returning fallback response:', error);
-        // Return fallback response when API is not available
-        return of({
-          query,
-          totalResults: 0,
-          page: 1,
-          totalPages: 1,
-          executionTimeMs: 0,
-          isSuccess: true,
-          results: [],
-          facets: {
-            entityTypes: {},
-            manufacturers: {},
-            hardwareTypes: {},
-            simulatorSdkTypes: {},
-            dateRanges: {}
-          }
-        });
+        console.error('Search API error:', error);
+        throw new Error('Failed to perform search. Please try again later.');
       })
     );
   }
@@ -156,69 +104,8 @@ export class SearchService {
     return this.http.get<SearchResponse>(`${this.BASE_URL}/api/search/quick`, { params }).pipe(
       map(response => response.results || []),
       catchError(error => {
-        console.warn('Quick search API not available, returning fallback data:', error);
-        // Return fallback data when API is not available
-        return of([
-          {
-            id: '1',
-            entityType: 'HardwarePanel',
-            title: 'Hardware Panel 1',
-            description: 'Main cockpit panel',
-            manufacturer: 'OpenA3XX',
-            relevanceScore: 0.95,
-            snippet: 'Main cockpit panel for aircraft configuration',
-            metadata: {},
-            actions: [{ name: 'view', url: '/view/hardware-panel-details?id=1', method: 'GET', requiresConfirmation: false }],
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            id: '2',
-            entityType: 'HardwareOutputType',
-            title: 'LED Generic Indicator',
-            description: 'LED indicator component',
-            manufacturer: 'OpenA3XX',
-            relevanceScore: 0.87,
-            snippet: 'LED indicator component for status display',
-            metadata: {},
-            actions: [{ name: 'view', url: '/manage/hardware-output-types', method: 'GET', requiresConfirmation: false }],
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            id: '3',
-            entityType: 'HardwareInputType',
-            title: 'Button Switch',
-            description: 'Push button switch',
-            manufacturer: 'OpenA3XX',
-            relevanceScore: 0.82,
-            snippet: 'Push button switch for user input',
-            metadata: {},
-            actions: [{ name: 'view', url: '/manage/hardware-input-types', method: 'GET', requiresConfirmation: false }],
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        ].filter(result =>
-          result.title.toLowerCase().includes(query.toLowerCase()) ||
-          result.entityType.toLowerCase().includes(query.toLowerCase()) ||
-          (result.description && result.description.toLowerCase().includes(query.toLowerCase()))
-        ));
-      })
-    );
-  }
-
-  /**
-   * Search suggestions endpoint
-   */
-  getSuggestions(query: string, limit: number = 5): Observable<SearchSuggestion[]> {
-    const params = new HttpParams()
-      .set('q', query)
-      .set('limit', limit.toString());
-
-    return this.http.get<SearchSuggestion[]>(`${this.BASE_URL}/api/search/suggestions`, { params }).pipe(
-      catchError(error => {
-        console.warn('Search suggestions API not available:', error);
-        return of([]);
+        console.error('Quick search API error:', error);
+        throw new Error('Failed to perform quick search. Please try again later.');
       })
     );
   }
@@ -229,35 +116,8 @@ export class SearchService {
   getEntityTypes(): Observable<EntityType[]> {
     return this.http.get<EntityType[]>(`${this.BASE_URL}/api/search/entity-types`).pipe(
       catchError(error => {
-        console.warn('Entity types API not available, returning fallback data:', error);
-        return of([
-          { id: 'AircraftModel', name: 'Aircraft Models', description: 'Aircraft model definitions', icon: 'airplanemode_active' },
-          { id: 'HardwarePanel', name: 'Hardware Panels', description: 'Hardware panel configurations', icon: 'dashboard' },
-          { id: 'HardwareBoard', name: 'Hardware Boards', description: 'Hardware board definitions', icon: 'memory' },
-          { id: 'HardwareInput', name: 'Hardware Inputs', description: 'Hardware input devices', icon: 'login' },
-          { id: 'HardwareOutput', name: 'Hardware Outputs', description: 'Hardware output devices', icon: 'logout' },
-          { id: 'HardwareInputType', name: 'Hardware Input Types', description: 'Hardware input type definitions', icon: 'input' },
-          { id: 'HardwareOutputType', name: 'Hardware Output Types', description: 'Hardware output type definitions', icon: 'output' },
-          { id: 'SimulatorEvent', name: 'Simulator Events', description: 'Simulator event definitions', icon: 'laptop' }
-        ]);
-      })
-    );
-  }
-
-  /**
-   * Get search statistics
-   */
-  getSearchStatistics(): Observable<SearchStatistics> {
-    return this.http.get<SearchStatistics>(`${this.BASE_URL}/api/search/statistics`).pipe(
-      catchError(error => {
-        console.warn('Search statistics API not available:', error);
-        return of({
-          totalSearches: 0,
-          averageQueryLength: 0,
-          mostSearchedTerms: [],
-          searchSuccessRate: 0,
-          averageResponseTime: 0
-        });
+        console.error('Entity types API error:', error);
+        throw new Error('Failed to load entity types. Please try again later.');
       })
     );
   }
