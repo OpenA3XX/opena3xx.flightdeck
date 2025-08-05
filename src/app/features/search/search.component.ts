@@ -167,11 +167,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onResultClick(result: SearchResult): void {
-    // if (result.actions && result.actions.length > 0) {
-    //   const primaryAction = result.actions.find(action => action.name === 'view') || result.actions[0];
-    //   const frontendUrl = this.convertApiUrlToFrontendRoute(primaryAction.url);
-    //   this.router.navigateByUrl(frontendUrl);
-    // }
+    if (result.actions && result.actions.length > 0) {
+      const primaryAction = result.actions.find(action => action.name === 'view') || result.actions[0];
+      const frontendUrl = this.convertApiUrlToFrontendRoute(primaryAction.url);
+      this.router.navigateByUrl(frontendUrl);
+    }
   }
 
   private convertApiUrlToFrontendRoute(apiUrl: string): string {

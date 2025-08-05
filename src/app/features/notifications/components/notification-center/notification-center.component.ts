@@ -44,14 +44,14 @@ export class NotificationCenterComponent implements OnInit, OnDestroy {
         key: 'severity',
         label: 'Severity',
         sortable: true,
-        width: '120px',
+        width: '60px',
         type: 'text'
       },
       {
         key: 'title',
         label: 'Title',
         sortable: true,
-        width: '30%',
+        width: '20%',
         type: 'text'
       },
       {
@@ -65,7 +65,7 @@ export class NotificationCenterComponent implements OnInit, OnDestroy {
         key: 'timestamp',
         label: 'Time',
         sortable: true,
-        width: '15%',
+        width: '20%',
         type: 'date'
       },
       {
@@ -78,7 +78,7 @@ export class NotificationCenterComponent implements OnInit, OnDestroy {
       {
         key: 'actions',
         label: 'Actions',
-        width: '200px',
+        width: '250px',
         type: 'actions',
         actions: [
           {

@@ -21,7 +21,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     const isPingRequest = this.isPingOrHeartbeatRequest(request);
 
     // Show loading indicator only for non-ping requests
-    if (!isPingRequest) {
+    if (!isPingRequest && !this.isSearchRequest(request)) {
       this.loadingService.show();
     }
 
@@ -65,6 +65,11 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         }
       })
     );
+  }
+
+  private isSearchRequest(request: HttpRequest<RequestBody>): boolean {
+    const url = request.url.toLowerCase();
+    return url.includes('/api/search');
   }
 
   /**
